@@ -1,10 +1,8 @@
-package game;
+package Game;
 
-import java.awt.*;
 
 public class Main {
-
     public static void main(String[] args) {
-        new Game(new GameMode(), new Player("emeline", Color.blue), null);
+        new GraphicMenu().showMenu();
     }
 }

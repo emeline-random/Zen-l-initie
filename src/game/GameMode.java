@@ -1,29 +1,18 @@
-package game;
+package Game;
 
 
-public class GameMode {
+public interface GameMode {
 
-    private String mode;
-    private GraphicalInterface graphicalInterface;
+    void restartGame(Game game);
 
-    public GameMode(){
-        this.mode = "classic";
-    }
+    void movePawn(Element[][] pawns);
 
-    public GameMode(String mode){
-        this.mode = mode;
-    }
+    void endGame(Player winner, Player looser, Game game, boolean equality);
 
-    public GameMode(String mode, GraphicalInterface graphicalInterface){
-        this.mode = mode;
-        this.graphicalInterface = graphicalInterface;
-    }
+    int[] play(Player player);
 
-    public GraphicalInterface getGraphicalInterface() {
-        return graphicalInterface;
-    }
+    void cannotMove();
 
-    public String  getMode() {
-        return mode;
-    }
+    void zenAlreadyPlaced();
+
 }

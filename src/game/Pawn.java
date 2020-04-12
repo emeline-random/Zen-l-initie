@@ -1,85 +1,72 @@
-package game;
+package Game;
 
+
+import Utilities.GameColor;
 
 import java.awt.*;
+import java.io.Serializable;
 
-public class Pawn {
+public class Pawn extends Element implements Serializable {
 
-    private final static int RADIUS = 5;
+    private static int diameter = Element.sizeUnity - Element.sizeUnity / 4;
     private final static int DIMENSION = GameBoard.getDIMENSION();
-    private int columnPosition;
-    private int linePosition;
-    private Color color;
+    private GameColor color;
     private String colorString;
     private int number;
-    private Player player;
 
-    public Pawn(Color color, Player player, int number) {
+    public Pawn(GameColor color, Player player, int number) {
+        super();
         if (color != null && player != null && number >= 0) {
             this.color = color;
+            this.colorString = color.ANSI_CODE;
             this.number = number;
-            this.player = player;
-            setColorString();
         }
     }
 
-    public Pawn(){
-        this.color = Color.red;
+    public Pawn() {
+        super();
+        this.color = GameColor.RED;
+        this.colorString = GameColor.RED.ANSI_CODE;
         this.number = -1;
-        this.setColorString();
-    }
-
-    private void setColorString(){
-        if(this.color == Color.RED) this.colorString = "\u001B[31m";
-        else if (this.color == Color.WHITE) this.colorString = "\u001B[37m";
-        else if(this.color == Color.CYAN) this.colorString = "\u001B[36m";
-        else if(this.color == Color.PINK) this.colorString = "\u001B[35m";
-        else if (this.color == Color.GREEN) this.colorString = "\u001B[32m";
-        else if(this.color == Color.BLUE) this.colorString = "\u001B[34m";
-        else if(this.color == Color.YELLOW) this.colorString = "\u001B[33m";
-        else this.colorString = "\u001B[0m";
     }
 
     protected void movePawn(int linePosition, int columnPosition) {
         if (columnPosition < DIMENSION && columnPosition >= 0 && linePosition < DIMENSION && linePosition >= 0) {
-            this.columnPosition = columnPosition;
-            this.linePosition = linePosition;
+            this.setPosition(linePosition, columnPosition);
         }
     }
 
     @Override
     public String toString() {
-        if(this.number != -1) return ""+this.number;
+        if (this.number != -1) return Integer.toString(this.number);
         else return "z";
     }
 
-    protected void paintCircle(Graphics g) {
+    @Override
+    protected void paint(Graphics g) {
+        super.paint(g);
         g.setColor(this.color);
-        g.fillOval((int) ((this.columnPosition + 1) * RADIUS * 2.5), (int) ((this.linePosition + 1) * RADIUS * 2.5 + 40), RADIUS * 2, RADIUS * 2);
+        g.fillOval((int) ((this.getColumnIndex() + 1) * Element.sizeUnity + 1 / 8d * Element.sizeUnity),
+                (int) ((this.getLineIndex() + 1) * Element.sizeUnity + 1 / 8d * Element.sizeUnity), diameter, diameter);
+        g.setColor(Color.black);
+        g.drawOval((int) ((this.getColumnIndex() + 1) * Element.sizeUnity + 1 / 8d * Element.sizeUnity),
+                (int) ((this.getLineIndex() + 1) * Element.sizeUnity + 1 / 8d * Element.sizeUnity), diameter, diameter);
+        g.drawString(this.toString(), (int) ((this.getColumnIndex() + 1.4) * Element.sizeUnity),
+                (int) ((this.getLineIndex() + 1.6) * Element.sizeUnity));
+        this.setX((this.getColumnIndex() + 1) * Element.sizeUnity);
+        this.setY((this.getLineIndex() + 1) * Element.sizeUnity);
     }
 
     public int getNumber() {
         return this.number;
     }
 
-    public int getColumnPosition() {
-        return this.columnPosition;
+    public static void setDiameter(int diameter) {
+        Pawn.diameter = diameter;
     }
 
-    public int getLinePosition() {
-        return this.linePosition;
-    }
-
-    public Color getColor(){
-        return this.color;
-    }
-
-    public String getColorString(){
+    public String getColorString() {
         return this.colorString;
     }
 
-    public void setPosition(int linePosition, int columnPosition) {
-        this.columnPosition = columnPosition;
-        this.linePosition = linePosition;
-    }
 }
