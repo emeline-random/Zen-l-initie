@@ -1,7 +1,7 @@
 package Utilities;
 
-import Game.Element;
-import Game.Pawn;
+import Game.bin.Element;
+import Game.bin.Pawn;
 
 import java.util.ArrayList;
 
@@ -13,7 +13,7 @@ public class MatrixUtilities {
      *
      * @param elements the matrix of elements to print
      */
-    public static void showPawnsMatrix(Element[][] elements) {
+    public static void showMatrix(Element[][] elements) {
         if (elements != null) {
             String s = "ABCDEFGHIJK";
             for (int i = 0; i < elements[0].length; i++) {
@@ -25,7 +25,7 @@ public class MatrixUtilities {
                 System.out.print(j + "\t");
                 for (Element pawn : pawns1) {
                     if (pawn instanceof Pawn)
-                        System.out.print(((Pawn) pawn).getColorString() + pawn + "\t" + "\u001B[0m");
+                        System.out.print(((Pawn) pawn).getANSIColor() + pawn + "\t" + "\u001B[0m");
                     else System.out.print("/ \t");
                 }
                 j++;
@@ -43,8 +43,8 @@ public class MatrixUtilities {
      * @param column  the column index of the point
      * @return true if the point is in the matrix, false otherwise
      */
-    public static boolean isInMatrix(Object[][] objects, int line, int column) {
-        return line >= 0 && column >= 0 && line < objects.length && column < objects[line].length;
+    public static boolean isOutOfMatrix(Object[][] objects, int line, int column) {
+        return line < 0 || column < 0 || line >= objects.length || column >= objects[line].length;
     }
 
     /**

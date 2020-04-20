@@ -5,18 +5,46 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
+/**
+ * Java class that allows the application to be available in different languages (french and english).
+ * The texts are stocked in one file per language.
+ */
 public class Language {
 
+    /**The current file where the texts are taken from*/
     private static File file = new File("Languages/English.txt");
+    /**The current language*/
+    private static Languages language = Languages.ENGLISH;
 
-    public static void setLanguage(String language){
-        if (language.equals("fr")){
-            file = new File("Languages/French.txt");
-        } else {
-            file = new File("Languages/English.txt");
+    /**The available languages*/
+    public enum Languages{
+        FRENCH,
+        ENGLISH
+    }
+
+    /**
+     * Allows to set the language by changing the file where the texts are taken from.
+     * @param language the wanted language
+     */
+    public static void setLanguage(Languages language){
+        Language.language = language;
+        switch (language){
+            case FRENCH:
+                file = new File("Languages/French.txt");
+                break;
+            case ENGLISH:
+                file = new File("Languages/English.txt");
+                break;
         }
     }
 
+    /**
+     * Allows to get the text in the chosen language with an identifier.
+     * In the file, line are made with an identifier and the text that
+     * corresponds to it separated by the equals sign.
+     * @param identifier the identifier of the text line
+     * @return the corresponding text
+     */
     public static String getText(String identifier) {
         Scanner scanner = null;
         try {
@@ -33,4 +61,11 @@ public class Language {
         return s.substring(1).trim();
     }
 
+    /**
+     * Allows to get the current language
+     * @return an element of the Languages enum
+     */
+    public static Languages getLanguage(){
+        return Language.language;
+    }
 }

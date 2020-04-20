@@ -43,37 +43,6 @@ public class InputUtilities {
     }
 
     /**
-     * Allows to get a table of number converted to String objects. The table returned
-     * is made of all the integer values between begin and end (the end index being excluded).
-     *
-     * @param begin the first number that will be in the table
-     * @param end   the last number that will be in the table + 1
-     * @return the string table that represents the numbers
-     */
-    public static String[] getStringTab(int begin, int end) {
-        String[] strings;
-        if (begin <= end) {
-            strings = new String[end - begin];
-            for (int i = begin; i < end; i++) {
-                strings[i] = Integer.toString(i);
-            }
-        } else {
-            throw new IllegalArgumentException();
-        }
-        return strings;
-    }
-
-    /**
-     * Allows to get all the characters that are handled by this convert class.
-     * The characters go from a to k included ans are converted to String objects.
-     *
-     * @return the table of all handled String objects
-     */
-    public static String[] getPossibleChars() {
-        return new String[]{"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k"};
-    }
-
-    /**
      * Allows to convert a character into an integer (do the opposite conversion
      * of the intToChar(int i) method that is define above). It handles both lower
      * and upper case and associate a (or A) to 0, b (or B) to 1, ... The character
