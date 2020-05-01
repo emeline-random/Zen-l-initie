@@ -1,7 +1,7 @@
-package Utilities;
+package utilities;
 
-import Game.bin.Element;
-import Game.bin.Pawn;
+import game.bin.Element;
+import game.bin.Pawn;
 
 import java.util.ArrayList;
 
@@ -137,7 +137,7 @@ public class MatrixUtilities {
      * @param list   the list of pawn
      * @return true if all pawns of the list are linked to each other, false otherwise.
      */
-    public static boolean pointsConnected(Element[][] matrix, ArrayList<Pawn> list) {
+    public static boolean pointsConnected(Object[][] matrix, ArrayList<Pawn> list) {
         ArrayList<Pawn> toDo = new ArrayList<>();
         toDo.add(list.get(0));
         ArrayList<Pawn> done = new ArrayList<>();
@@ -172,7 +172,7 @@ public class MatrixUtilities {
      * @param list the list of potential neighbours
      * @return the list of actual neighbours (that is actually a part of the potential neighbours list or an empty list)
      */
-    public static ArrayList<Pawn> getNeighbours(Element[][] matrix, int column, int line, ArrayList<Pawn> list) {
+    public static ArrayList<Pawn> getNeighbours(Object[][] matrix, int column, int line, ArrayList<Pawn> list) {
         ArrayList<Pawn> neighbours = new ArrayList<>();
         boolean left = (column - 1 >= 0);
         boolean right = (column + 1 < matrix[0].length);
@@ -207,35 +207,35 @@ public class MatrixUtilities {
      * @param nextColumn the column where the pawn will be after its displacement
      * @return true if the pawn meets an adverse pawn, false otherwise
      */
-    public static boolean meetAdverse(Element[][] matrix, ArrayList<Pawn> adversePawns, int lastLine, int lastColumn, int nextLine, int nextColumn) {
+    public static boolean meetAdverse(Object[][] matrix, ArrayList<Pawn> adversePawns, int lastLine, int lastColumn, int nextLine, int nextColumn) {
         boolean meet = false;
         int line = lastLine - nextLine;
         int column = lastColumn - nextColumn;
         if (line != 0 && column != 0) {
             if (line > 0 && column > 0) {
                 for (int i = 1; lastLine - i > nextLine; i++) {
-                    if (adversePawns.contains(matrix[lastLine - i][lastColumn - i]) && ((Pawn) matrix[lastLine - i][lastColumn - i]).getNumber() != -1) {
+                    if (adversePawns.contains(matrix[lastLine - i][lastColumn - i]) && ((Pawn) matrix[lastLine - i][lastColumn - i]).getNUMBER() != -1) {
                         meet = true;
                         break;
                     }
                 }
             } else if (line < 0 && column > 0) {
                 for (int i = 1; lastLine + i < nextLine; i++) {
-                    if (adversePawns.contains(matrix[lastLine + i][lastColumn - i]) && ((Pawn) matrix[lastLine + i][lastColumn - i]).getNumber() != -1) {
+                    if (adversePawns.contains(matrix[lastLine + i][lastColumn - i]) && ((Pawn) matrix[lastLine + i][lastColumn - i]).getNUMBER() != -1) {
                         meet = true;
                         break;
                     }
                 }
             } else if (line < 0) {
                 for (int i = 1; lastLine + i < nextLine; i++) {
-                    if (adversePawns.contains(matrix[lastLine + i][lastColumn + i]) && ((Pawn) matrix[lastLine + i][lastColumn + i]).getNumber() != -1) {
+                    if (adversePawns.contains(matrix[lastLine + i][lastColumn + i]) && ((Pawn) matrix[lastLine + i][lastColumn + i]).getNUMBER() != -1) {
                         meet = true;
                         break;
                     }
                 }
             } else {
                 for (int i = 1; lastLine - i > nextLine; i++) {
-                    if (adversePawns.contains(matrix[lastLine - i][lastColumn + i]) && ((Pawn) matrix[lastLine - i][lastColumn + i]).getNumber() != -1) {
+                    if (adversePawns.contains(matrix[lastLine - i][lastColumn + i]) && ((Pawn) matrix[lastLine - i][lastColumn + i]).getNUMBER() != -1) {
                         meet = true;
                         break;
                     }
@@ -244,28 +244,28 @@ public class MatrixUtilities {
         } else {
             if (line > 0) {
                 for (int i = lastLine - 1; i > nextLine; i--) {
-                    if (adversePawns.contains(matrix[i][nextColumn]) && ((Pawn) matrix[i][nextColumn]).getNumber() != -1) {
+                    if (adversePawns.contains(matrix[i][nextColumn]) && ((Pawn) matrix[i][nextColumn]).getNUMBER() != -1) {
                         meet = true;
                         break;
                     }
                 }
             } else if (line < 0) {
                 for (int i = lastLine + 1; i < nextLine; i++) {
-                    if (adversePawns.contains(matrix[i][nextColumn]) && ((Pawn) matrix[i][nextColumn]).getNumber() != -1) {
+                    if (adversePawns.contains(matrix[i][nextColumn]) && ((Pawn) matrix[i][nextColumn]).getNUMBER() != -1) {
                         meet = true;
                         break;
                     }
                 }
             } else if (column > 0) {
                 for (int i = lastColumn - 1; i > nextColumn; i--) {
-                    if (adversePawns.contains(matrix[nextLine][i]) && ((Pawn) matrix[nextLine][i]).getNumber() != -1) {
+                    if (adversePawns.contains(matrix[nextLine][i]) && ((Pawn) matrix[nextLine][i]).getNUMBER() != -1) {
                         meet = true;
                         break;
                     }
                 }
             } else {
                 for (int i = lastColumn + 1; i < nextColumn; i++) {
-                    if (adversePawns.contains(matrix[nextLine][i]) && ((Pawn) matrix[nextLine][i]).getNumber() != -1) {
+                    if (adversePawns.contains(matrix[nextLine][i]) && ((Pawn) matrix[nextLine][i]).getNUMBER() != -1) {
                         meet = true;
                         break;
                     }

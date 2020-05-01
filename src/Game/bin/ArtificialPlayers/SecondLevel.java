@@ -1,31 +1,57 @@
-package Game.bin.ArtificialPlayers;
+package game.bin.artificialPlayers;
 
-import Game.Controllers.Game;
-import Game.Model.GameBoard;
-import Game.bin.Element;
-import Game.bin.Pawn;
-import Game.bin.Player;
-import Utilities.GameColor;
-import Utilities.Language;
-import Utilities.MatrixUtilities;
+import game.controller.Game;
+import game.model.GameBoard;
+import game.bin.Element;
+import game.bin.Pawn;
+import game.bin.Player;
+import utilities.GameColor;
+import utilities.Language;
+import utilities.MatrixUtilities;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TreeMap;
 
+/**
+ * Java class that allows to create an artificial player against which a human player will be able
+ * to play in one-player games. This level is more difficult than the one in the FirstLevel class.
+ */
 public class SecondLevel extends ArtificialPlayer implements Serializable {
 
-
+    /**
+     * Constructor of the class that initializes an artificial player of level 2
+     * and that sets the artificialPlayer boolean to true in the superclass Player
+     * (which is the superclass of its superclass)
+     * @param name the name of the player
+     * @param color the color of the player
+     */
     public SecondLevel(String name, GameColor color) {
         super(name, color);
         this.setArtificialPlayer(true);
     }
 
+    /**
+     * Constructor of the class that creates a temporary artificial player
+     * object. The goal of this object should be to use its createPlayer method
+     * to obtain a fully competent player.
+     */
     public SecondLevel() {
         super("", GameColor.WHITE);
     }
 
+    /**
+     * Allows to compute the move that will be done by the player. In this level and
+     * while all the pawns are separated, the most far pawn will be bring back to the
+     * center of the pawn. After this, this player will try to bring back the pawn
+     * that is the most far to the biggest chain of pawns to this chain. Waits 1 second
+     * before playing.
+     * @param board   the board of Elements where the game is taking place
+     * @param adverse the adverse of this player
+     * @param game    the current game
+     * @return a correct displacement
+     */
     @Override
     public int[] play(Element[][] board, Player adverse, Game game) {
         ArrayList<Pawn> biggestChain = this.biggestChain(board);
@@ -34,15 +60,33 @@ public class SecondLevel extends ArtificialPlayer implements Serializable {
             move = this.goToAPoint(board, game, adverse, GameBoard.getDIMENSION() / 2, GameBoard.getDIMENSION() / 2, biggestChain);
         } else {
             move = this.goToAPoint(board, game, adverse, biggestChain.get(0).getLineIndex(), biggestChain.get(0).getColumnIndex(), biggestChain);
-            if (MatrixUtilities.isOutOfMatrix(board, move[1], move[2]) || !game.checkMove(this, move, adverse)) {
+            if (this.incorrectMove(move, adverse, game)) {
                 ArrayList<Pawn> littleChain = new ArrayList<>();
                 littleChain.add(biggestChain.get(0));
                 move = this.goToAPoint(board, game, adverse, biggestChain.get(0).getLineIndex(), biggestChain.get(0).getColumnIndex(), littleChain);
             }
         }
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         return move;
     }
 
+    /**
+     * Allows to bring back the most far pawn of a point to this point, if it's not
+     * possible, the second more far point if bring back ... If all the best moves for
+     * all pawns that are not in chain are impossibles, the second best move is done.
+     * If it is still not possible, a pretty random move is done.
+     * @param board the board of Elements where the game is taking place
+     * @param game the current game
+     * @param adverse the adverse of this player
+     * @param line the line index of the point to which the pawns are to be moved closer together
+     * @param column the column index of the point to which the pawns are to be moved closer together
+     * @param biggestChain the ArrayList containing the pawns that are in the biggest chain of pawns on the board
+     * @return the best move to do considering this method
+     */
     private int[] goToAPoint(Element[][] board, Game game, Player adverse, int line, int column, ArrayList<Pawn> biggestChain) {
         ArrayList<Pawn> notInChain = new ArrayList<>(this.getPawns());
         notInChain.removeAll(biggestChain);
@@ -51,15 +95,15 @@ public class SecondLevel extends ArtificialPlayer implements Serializable {
         int[] moves;
         int i = pawns.size() - 1;
         do {
-            moves = this.bestMove(pawns.get(i), board);
-            hasMoved = !this.incorrectMove(moves, adverse, board, game);
+            moves = this.bestMove(pawns.get(i), board, line, column);
+            hasMoved = !this.incorrectMove(moves, adverse, game);
             i--;
         } while (!hasMoved && i >= 0);
         if (!hasMoved) {
             i = pawns.size() - 1;
             do {
-                moves = this.secondBestMove(pawns.get(i), board);
-                hasMoved = !this.incorrectMove(moves, adverse, board, game);
+                moves = this.secondBestMove(pawns.get(i), board, line, column);
+                hasMoved = !this.incorrectMove(moves, adverse, game);
                 i--;
             } while (!hasMoved && i >= 0);
         }
@@ -67,13 +111,22 @@ public class SecondLevel extends ArtificialPlayer implements Serializable {
             i = pawns.size() - 1;
             do {
                 moves = this.randomMove(pawns.get(i), board, game, adverse);
-                hasMoved = !this.incorrectMove(moves, adverse, board, game);
+                hasMoved = !this.incorrectMove(moves, adverse, game);
                 i--;
             } while (!hasMoved && i >= 0);
         }
         return moves;
     }
 
+    /**
+     * Allows to get the ArrayList containing the pawns that are not in the biggest chain
+     * sorted by their distance to the point defined by the line and the column passed
+     * in parameters.
+     * @param line the line index of the point to which the pawns are to be moved closer together
+     * @param column the column index of the point to which the pawns are to be moved closer together
+     * @param notInChain the ArrayList of pawns that are not in the biggest chain.
+     * @return the sorted ArrayList of pawns
+     */
     private ArrayList<Pawn> farFromPointOrdered(int line, int column, ArrayList<Pawn> notInChain) {
         int[] distances = new int[notInChain.size()];
         HashMap<Integer, Pawn> map = new HashMap<>();
@@ -84,13 +137,24 @@ public class SecondLevel extends ArtificialPlayer implements Serializable {
         return new ArrayList<>(orderedMap.values());
     }
 
-    private int[] bestMove(Pawn pawn, Element[][] board) {
-        int lineDifference = pawn.getLineIndex() - GameBoard.getDIMENSION() / 2;
-        int columnDifference = pawn.getColumnIndex() - GameBoard.getDIMENSION() / 2;
+    /**
+     * Allows to compute the best move for a pawn considering its distance to the point identified
+     * by the line and the column. If the difference between the line where the pawn is and the line
+     * of the point is higher than the difference between the column, the pawn move on the line. Else
+     * it moves on the column. If both differences are the same the pawn moves diagonally.
+     * @param pawn the pawn to move
+     * @param board the board of Elements where the game is taking place
+     * @param line the line of the point
+     * @param column the line of the column
+     * @return the coordinates of the displacement according to the format [pawn, line, column]
+     */
+    private int[] bestMove(Pawn pawn, Element[][] board, int line, int column) {
+        int lineDifference = pawn.getLineIndex() - line;
+        int columnDifference = pawn.getColumnIndex() - column;
         int lineNumber = MatrixUtilities.countObjectLine(board, pawn.getLineIndex());
         int columnNumber = MatrixUtilities.countObjectColumn(board, pawn.getColumnIndex());
         int[] moves = new int[3];
-        moves[0] = pawn.getNumber();
+        moves[0] = pawn.getNUMBER();
         if (Math.abs(lineDifference) > Math.abs(columnDifference)) {
             moves[2] = pawn.getColumnIndex();
             if (lineDifference > 0) moves[1] = pawn.getLineIndex() - columnNumber;
@@ -124,13 +188,22 @@ public class SecondLevel extends ArtificialPlayer implements Serializable {
         return moves;
     }
 
-    private int[] secondBestMove(Pawn pawn, Element[][] board) {
-        int lineDifference = pawn.getLineIndex() - GameBoard.getDIMENSION() / 2;
-        int columnDifference = pawn.getColumnIndex() - GameBoard.getDIMENSION() / 2;
+    /**
+     * Allows to compute the best move for a pawn considering its distance to the point identified
+     * by the line and the column.
+     * @param pawn the pawn to move
+     * @param board the matrix of Elements where the game is taking place
+     * @param line the line of the point
+     * @param column the line of the column
+     * @return the coordinates of the displacement according to the format [pawn, line, column]
+     */
+    private int[] secondBestMove(Pawn pawn, Element[][] board, int line, int column) {
+        int lineDifference = pawn.getLineIndex() - line;
+        int columnDifference = pawn.getColumnIndex() - column;
         int lineNumber = MatrixUtilities.countObjectLine(board, pawn.getLineIndex());
         int columnNumber = MatrixUtilities.countObjectColumn(board, pawn.getColumnIndex());
         int[] moves = new int[3];
-        moves[0] = pawn.getNumber();
+        moves[0] = pawn.getNUMBER();
         if (Math.abs(lineDifference) > Math.abs(columnDifference)) {
             moves[1] = pawn.getLineIndex();
             if (columnDifference > 0) moves[2] = pawn.getColumnIndex() - columnNumber;
@@ -143,34 +216,44 @@ public class SecondLevel extends ArtificialPlayer implements Serializable {
         return moves;
     }
 
+    /**
+     * Allows to compute all the possible moves for one pawn. If this pawn can move
+     * in any direction, this method will find it and returns the first possible
+     * displacement that is found.
+     * @param pawn the pawn to move
+     * @param board the matrix of Elements where the game is taking place
+     * @param game the current game
+     * @param adverse the adverse of this player
+     * @return the coordinates of the displacement according to the format [pawn, line, column]
+     */
     private int[] randomMove(Pawn pawn, Element[][] board, Game game, Player adverse) {
         int columnNumber = MatrixUtilities.countObjectColumn(board, pawn.getColumnIndex());
         int lineNumber = MatrixUtilities.countObjectLine(board, pawn.getLineIndex());
-        int[] move = {pawn.getNumber(), pawn.getLineIndex(), pawn.getColumnIndex() - lineNumber};
-        if (incorrectMove(move, adverse, board, game)) {
+        int[] move = {pawn.getNUMBER(), pawn.getLineIndex(), pawn.getColumnIndex() - lineNumber};
+        if (incorrectMove(move, adverse, game)) {
             move[2] = pawn.getColumnIndex() + lineNumber;
         }
-        if (incorrectMove(move, adverse, board, game)) {
+        if (incorrectMove(move, adverse, game)) {
             move[2] = pawn.getColumnIndex();
             move[1] = pawn.getLineIndex() - columnNumber;
         }
-        if (incorrectMove(move, adverse, board, game)) {
+        if (incorrectMove(move, adverse, game)) {
             move[1] = pawn.getLineIndex() + columnNumber;
         }
-        if (incorrectMove(move, adverse, board, game)) {
+        if (incorrectMove(move, adverse, game)) {
             int diagAscNumber = MatrixUtilities.countObjectDiagAsc(board, pawn.getLineIndex(), pawn.getColumnIndex());
             int diagDescNumber = MatrixUtilities.countObjectDiagDesc(board, pawn.getLineIndex(), pawn.getColumnIndex());
             move[1] = pawn.getLineIndex() + diagAscNumber;
             move[2] = pawn.getColumnIndex() - diagAscNumber;
-            if (incorrectMove(move, adverse, board, game)) {
+            if (incorrectMove(move, adverse, game)) {
                 move[1] = pawn.getLineIndex() + diagDescNumber;
                 move[2] = pawn.getColumnIndex() + diagDescNumber;
             }
-            if (incorrectMove(move, adverse, board, game)) {
+            if (incorrectMove(move, adverse, game)) {
                 move[1] = pawn.getLineIndex() - diagAscNumber;
                 move[2] = pawn.getColumnIndex() + diagAscNumber;
             }
-            if (incorrectMove(move, adverse, board, game)) {
+            if (incorrectMove(move, adverse, game)) {
                 move[1] = pawn.getLineIndex() - diagDescNumber;
                 move[2] = pawn.getColumnIndex() - diagDescNumber;
             }
@@ -178,6 +261,12 @@ public class SecondLevel extends ArtificialPlayer implements Serializable {
         return move;
     }
 
+    /**
+     * Allows to get the biggest chain of pawns of this player in the current game board in an
+     * ArrayList of pawns.
+     * @param board the matrix of Elements where the game is taking place
+     * @return the biggest chain of pawns.
+     */
     private ArrayList<Pawn> biggestChain(Element[][] board) {
         ArrayList<Pawn> toDo = new ArrayList<>(this.getPawns());
         ArrayList<ArrayList<Pawn>> chains = new ArrayList<>();
@@ -203,15 +292,33 @@ public class SecondLevel extends ArtificialPlayer implements Serializable {
         return toDo;
     }
 
-    private boolean incorrectMove(int[] move, Player adverse, Element[][] board, Game game) {
-        return MatrixUtilities.isOutOfMatrix(board, move[1], move[2]) || !game.checkMove(this, move, adverse);
+    /**
+     * Allows to know if a displacement is correct or not.
+     * @param move the considerate displacement
+     * @param adverse the adverse of this player
+     * @param game the current game
+     * @return true if the move is incorrect, wrong otherwise.
+     */
+    private boolean incorrectMove(int[] move, Player adverse, Game game) {
+        return !game.checkMove(this, move, adverse);
     }
 
+    /**
+     * Allows to create a SecondLevel artificial player based on
+     * the color chosen by its adverse.
+     * @param color the already chosen color
+     * @return the new FirstLevel player.
+     */
     @Override
     public Player createPlayer(GameColor color) {
         return new SecondLevel("ord", GameColor.getRandomColor(color));
     }
 
+    /**
+     * Allows to print the level of this player in the corresponding
+     * language.
+     * @return the String representation of a SecondLevel player
+     */
     @Override
     public String toString() {
         return Language.getText("level2");

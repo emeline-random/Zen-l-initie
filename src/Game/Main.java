@@ -1,6 +1,6 @@
-package Game;
+package game;
 
-import Game.View.GraphicMenu;
+import game.view.GraphicMenu;
 
 public class Main {
     public static void main(String[] args) {

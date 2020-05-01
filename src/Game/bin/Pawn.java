@@ -1,7 +1,7 @@
-package Game.bin;
+package game.bin;
 
 
-import Utilities.GameColor;
+import utilities.GameColor;
 
 import java.awt.*;
 import java.io.Serializable;
@@ -15,19 +15,19 @@ public class Pawn extends Element implements Serializable {
     /**
      * The diameter af all pawns
      */
-    private static int diameter = Element.sizeUnity - Element.sizeUnity / 4;
+    private static int diameter = Element.getSizeUnity() - Element.getSizeUnity() / 4;
     /**
      * The color of the pawn
      */
-    private final GameColor color;
+    private final GameColor COLOR;
     /**
      * The ANSI escape code that represents the color
      */
-    private final String colorString;
+    private final String ANSICODE;
     /**
      * The number of the pawn
      */
-    private final int number;
+    private final int NUMBER;
 
     /**
      * Constructor of the class, allows to initialize the number,
@@ -40,9 +40,9 @@ public class Pawn extends Element implements Serializable {
     public Pawn(GameColor color, int number) {
         super();
         if (color != null && (number >= 0 || number == -1)) {
-            this.color = color;
-            this.colorString = color.ANSI_CODE;
-            this.number = number;
+            this.COLOR = color;
+            this.ANSICODE = color.ANSI_CODE;
+            this.NUMBER = number;
         } else {
             throw new IllegalArgumentException("Pawn constructor exception");
         }
@@ -58,16 +58,16 @@ public class Pawn extends Element implements Serializable {
     @Override
     public void paint(Graphics g) {
         super.paint(g);
-        g.setColor(this.color);
-        g.fillOval((int) ((this.getColumnIndex() + 1) * Element.sizeUnity + 1 / 8d * Element.sizeUnity),
-                (int) ((this.getLineIndex() + 1) * Element.sizeUnity + 1 / 8d * Element.sizeUnity), diameter, diameter);
+        g.setColor(this.COLOR);
+        g.fillOval((int) ((this.getColumnIndex() + 1) * Element.getSizeUnity() + 1 / 8d * Element.getSizeUnity()),
+                (int) ((this.getLineIndex() + 1) * Element.getSizeUnity() + 1 / 8d * Element.getSizeUnity()), diameter, diameter);
         g.setColor(Color.black);
-        g.drawOval((int) ((this.getColumnIndex() + 1) * Element.sizeUnity + 1 / 8d * Element.sizeUnity),
-                (int) ((this.getLineIndex() + 1) * Element.sizeUnity + 1 / 8d * Element.sizeUnity), diameter, diameter);
-        g.drawString(this.toString(), (int) ((this.getColumnIndex() + 1.4) * Element.sizeUnity),
-                (int) ((this.getLineIndex() + 1.6) * Element.sizeUnity));
-        this.setX((this.getColumnIndex() + 1) * Element.sizeUnity);
-        this.setY((this.getLineIndex() + 1) * Element.sizeUnity);
+        g.drawOval((int) ((this.getColumnIndex() + 1) * Element.getSizeUnity() + 1 / 8d * Element.getSizeUnity()),
+                (int) ((this.getLineIndex() + 1) * Element.getSizeUnity() + 1 / 8d * Element.getSizeUnity()), diameter, diameter);
+        g.drawString(this.toString(), (int) ((this.getColumnIndex() + 1.4) * Element.getSizeUnity()),
+                (int) ((this.getLineIndex() + 1.6) * Element.getSizeUnity()));
+        this.setX((this.getColumnIndex() + 1) * Element.getSizeUnity());
+        this.setY((this.getLineIndex() + 1) * Element.getSizeUnity());
     }
 
     /**
@@ -77,7 +77,7 @@ public class Pawn extends Element implements Serializable {
      */
     @Override
     public String toString() {
-        if (this.number != -1) return Integer.toString(this.number);
+        if (this.NUMBER != -1) return Integer.toString(this.NUMBER);
         else return "z";
     }
 
@@ -97,8 +97,8 @@ public class Pawn extends Element implements Serializable {
      *
      * @return the pawn's number
      */
-    public int getNumber() {
-        return this.number;
+    public int getNUMBER() {
+        return this.NUMBER;
     }
 
     /**
@@ -108,7 +108,7 @@ public class Pawn extends Element implements Serializable {
      * @return the ANSI escape code
      */
     public String getANSIColor() {
-        return this.colorString;
+        return this.ANSICODE;
     }
 
 }

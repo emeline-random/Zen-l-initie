@@ -1,8 +1,6 @@
-package Utilities;
+package utilities;
 
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 /**
@@ -11,29 +9,36 @@ import java.util.Scanner;
  */
 public class Language {
 
-    /**The current file where the texts are taken from*/
-    private static File file = new File("Languages/English.txt");
-    /**The current language*/
+    /**
+     * The current file where the texts are taken from
+     */
+    private static String file = "/Languages/English.txt";
+    /**
+     * The current language
+     */
     private static Languages language = Languages.ENGLISH;
 
-    /**The available languages*/
-    public enum Languages{
+    /**
+     * The available languages
+     */
+    public enum Languages {
         FRENCH,
         ENGLISH
     }
 
     /**
      * Allows to set the language by changing the file where the texts are taken from.
+     *
      * @param language the wanted language
      */
-    public static void setLanguage(Languages language){
+    public static void setLanguage(Languages language) {
         Language.language = language;
-        switch (language){
+        switch (language) {
             case FRENCH:
-                file = new File("Languages/French.txt");
+                file = "/Languages/French.txt";
                 break;
             case ENGLISH:
-                file = new File("Languages/English.txt");
+                file = "/Languages/English.txt";
                 break;
         }
     }
@@ -42,30 +47,27 @@ public class Language {
      * Allows to get the text in the chosen language with an identifier.
      * In the file, line are made with an identifier and the text that
      * corresponds to it separated by the equals sign.
+     *
      * @param identifier the identifier of the text line
      * @return the corresponding text
      */
     public static String getText(String identifier) {
-        Scanner scanner = null;
-        try {
-            scanner = new Scanner(Language.file);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        String s;
-        do {
-            assert scanner != null;
+        Scanner scanner = new Scanner(Language.class.getResourceAsStream(file));
+        String s ="";
+        String ret ="";
+        while (scanner.hasNextLine() && !s.split("=")[0].trim().equals(identifier.trim())){
             s = scanner.nextLine();
-        } while (!s.split("=")[0].trim().equals(identifier.trim()));
-        s = s.split("=")[1];
-        return s.substring(1).trim();
+            ret = s.split("=")[1];
+        }
+        return ret.trim();
     }
 
     /**
      * Allows to get the current language
+     *
      * @return an element of the Languages enum
      */
-    public static Languages getLanguage(){
+    public static Languages getLanguage() {
         return Language.language;
     }
 }

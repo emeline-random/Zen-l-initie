@@ -1,11 +1,14 @@
-package Game.bin;
+package game.bin;
 
-import Utilities.GameColor;
+import utilities.GameColor;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 
-
+/**
+ * Java class that allows to creat a player in the game. This player will have
+ * a name, a color, a number of points and a list of pawns.
+ */
 public class Player implements Serializable {
 
     /**The name of the player*/
@@ -13,7 +16,7 @@ public class Player implements Serializable {
     /**The number of points of the player*/
     private int points;
     /**The color of the player*/
-    private final GameColor color;
+    private final GameColor COLOR;
     /**The number of pawns for all players*/
     private final static int PAWNS_NUMBER = 12;
     /**True if it's the player's turn to play.*/
@@ -31,7 +34,7 @@ public class Player implements Serializable {
      */
     public Player(String name, GameColor color) {
         if (name != null) {
-            this.color = color;
+            this.COLOR = color;
             this.NAME = name;
             resetPawns();
         } else {
@@ -47,7 +50,7 @@ public class Player implements Serializable {
     public void resetPawns() {
         this.pawns.clear();
         for(int i = 0; i < PAWNS_NUMBER; i++) {
-            this.pawns.add(new Pawn(this.color, i));
+            this.pawns.add(new Pawn(this.COLOR, i));
         }
     }
 
@@ -102,7 +105,7 @@ public class Player implements Serializable {
     public Pawn getPawn(int index){
         Pawn pawn = null;
         for (Pawn p : this.pawns){
-            if (index == p.getNumber()){
+            if (index == p.getNUMBER()){
                 pawn = p;
                 break;
             }
@@ -128,8 +131,8 @@ public class Player implements Serializable {
     /**
      * @return the color chosen by the player
      */
-    public GameColor getColor() {
-        return this.color;
+    public GameColor getCOLOR() {
+        return this.COLOR;
     }
 
     /**

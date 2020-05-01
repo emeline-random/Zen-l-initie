@@ -1,4 +1,9 @@
-package Utilities;
+package utilities;
+
+import game.controller.Game;
+import game.view.ConsoleMenu;
+
+import java.util.Scanner;
 
 /**
  * Utility class that allows to do some conversions between integer and characters.
@@ -46,9 +51,8 @@ public class InputUtilities {
      * Allows to convert a character into an integer (do the opposite conversion
      * of the intToChar(int i) method that is define above). It handles both lower
      * and upper case and associate a (or A) to 0, b (or B) to 1, ... The character
-     * handled are defined in the getPossibleChars() method and corresponds to the
-     * characters from a to k. If the character passed is not one of these the value
-     * returned is -1.
+     * handled correspond to the characters from a to k. If the character passed is
+     * not one of these the value returned is -1.
      *
      * @param c the char to convert
      * @return the integer associated with the char
@@ -90,6 +94,95 @@ public class InputUtilities {
                 return 10;
             default:
                 return -1;
+        }
+    }
+
+    /**
+     * Allows to get a confirmation to a yes/no question from the user.
+     *
+     * @param message the question to display
+     * @return true if the user confirms (responds yes), false otherwise.
+     */
+    public static boolean getConfirmation(String message) {
+        System.out.println(message);
+        Scanner scanner = new Scanner(System.in);
+        String confirmation = scanner.next();
+        while (!confirmation.equals("y") && !confirmation.equals("yes") && !confirmation.equals("n") && !confirmation.equals("no")
+                && !confirmation.equals("Y") && !confirmation.equals("N")) {
+            System.out.println(Language.getText("yn input error"));
+            confirmation = scanner.next();
+        }
+        return confirmation.equals("y") || confirmation.equals("Y") || confirmation.equals("yes");
+    }
+
+    /**
+     * Allows to get an input from the user. This input has to match the given regular expression and
+     * an error message will be display until the user give a correct input.
+     *
+     * @param message      the first message to display
+     * @param regex        the regular expression that the input needs to match
+     * @param errorMessage the error message printed if the input is not correct
+     * @param game         the game that is used to check the input (for saving and restarting game), may be null
+     * @return the input value matching the regular expression
+     */
+    public static String getInputRegex(String message, String regex, String errorMessage, Game game) {
+        String s;
+        if (message != null) {
+            System.out.println(message);
+        }
+        boolean error = false;
+        Scanner scanner = new Scanner(System.in);
+        do {
+            if (error && errorMessage != null) System.out.println(errorMessage);
+            s = scanner.nextLine();
+            checkInput(s, game);
+            error = true;
+        } while (!s.matches(regex));
+        return s;
+    }
+
+    /**
+     * Allows to check an input, if a precise function is recognise such as quitting the
+     * game (input "q", "quit", "exit" or "Q"), this action is performed.
+     *
+     * @param s    the String to analyse
+     * @param game the game to save or restart (may be null)
+     */
+    private static void checkInput(String s, Game game) {
+        switch (s.trim()) {
+            case "fr":
+                Language.setLanguage(Language.Languages.FRENCH);
+                System.out.println("langue changée");
+                break;
+            case "en":
+                Language.setLanguage(Language.Languages.ENGLISH);
+                System.out.println("language changed");
+                break;
+            case "q":
+            case "Q":
+            case "quit":
+            case "exit":
+                if (getConfirmation(Language.getText("quit confirmation"))) System.exit(0);
+                break;
+            case "menu":
+            case "m":
+                if (getConfirmation(Language.getText("menu confirmation"))) ConsoleMenu.showMenu();
+                break;
+            case "r":
+            case "replay":
+                try {
+                    game.replay();
+                } catch (Exception e) {
+                    System.out.println(Language.getText("replay error"));
+                }
+                break;
+            case "save":
+                try {
+                    game.saveGame();
+                    System.out.println(Language.getText("game saved"));
+                } catch (Exception e) {
+                    System.out.println(Language.getText("save error"));
+                }
         }
     }
 }

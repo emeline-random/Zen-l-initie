@@ -1,18 +1,31 @@
-package Game.View;
+package game.view;
 
-import Game.Controllers.Game;
-import Game.bin.*;
-import Utilities.InputUtilities;
-import Utilities.Language;
-import Utilities.MatrixUtilities;
+import game.controller.Game;
+import game.bin.*;
+import utilities.InputUtilities;
+import utilities.Language;
+import utilities.MatrixUtilities;
 
-import java.util.Scanner;
-
+/**
+ * Allows to create a view to play in console. A game must have a view (that implements GameMode) to be
+ * displayed and to work correctly. It allows to interact with the users.
+ */
 public class Console implements GameMode {
 
+    /**
+     * The game to be displayed
+     */
     private Game game;
+    /**
+     * The level of the game
+     */
     private final Level level;
 
+    /**
+     * Allows to create a console view with a precised level.
+     * @throws IllegalArgumentException if the level is null
+     * @param level the level that the game will be played in
+     */
     public Console(Level level) {
         if (level != null) {
             this.level = level;
@@ -21,11 +34,21 @@ public class Console implements GameMode {
         }
     }
 
+    /**
+     * Allows to set the current game
+     * @param game the displayed game
+     */
     @Override
     public void setGame(Game game) {
         this.game = game;
     }
 
+    /**
+     * Allows to restart a saved game, it performs the movePawn() method to
+     * print the board and then calls game.play().
+     * @param game the current game
+     * @param board the board to display
+     */
     @Override
     public void restartGame(Game game, Element[][] board) {
         this.game = game;
@@ -33,49 +56,71 @@ public class Console implements GameMode {
         game.play();
     }
 
+    /**
+     * Allows to print a message depending on who won and asks the players if they want to
+     * replay this game. If the answer is true the replay() method of the game is called, otherwise
+     * the console menu is displayed.
+     * @param winner the winner of the game
+     * @param looser the looser of the game
+     * @param equality true if there's an equality, else otherwise
+     */
     @Override
     public void endGame(Player winner, Player looser, boolean equality) {
-        if (!equality) {
-            System.out.println(Language.getText("congrats") + winner.getNAME() + ", " + Language.getText("win message"));
-        } else {
+        if (equality) {
             System.out.println(Language.getText("equality"));
+        } else {
+            System.out.println(Language.getText("congrats") + winner.getNAME() + ", " + Language.getText("win message"));
         }
-        if (this.getConfirmation(Language.getText("new game"))) {
+        if (InputUtilities.getConfirmation(Language.getText("new game"))) {
             this.game.replay();
         } else {
             System.out.println(winner.getNAME() + " " + Language.getText("has") + " " + winner.getPoints() + " point(s)");
             System.out.println(looser.getNAME() + " " + Language.getText("has") + " " + looser.getPoints() + " point(s)");
-            ConsoleMenu.showMenu(this);
+            ConsoleMenu.showMenu();
         }
     }
 
+    /**
+     * Allows to actualize the view of the board by printing it.
+     * @param player the player who just played
+     * @param move the move done in format [pawn, line, column]
+     * @param board the board that will be display
+     */
     @Override
     public void movePawn(Player player, int[] move, Element[][] board) {
         MatrixUtilities.showMatrix(board);
     }
 
+    /**
+     * Allows to get the coordinates of a move. First the number of the pawn to move is asked to the user, then
+     * when it is correct if the mode is easy the user has to indicate a direction, else he has to type the line
+     * and the column index.
+     * @param player the player that should play
+     * @param board the board of Element objects on which the game is taking place
+     * @return the coordinates of the move in the format [pawn, line, column].
+     */
     @Override
     public int[] play(Player player, Element[][] board) {
         int[] coordinates = new int[3];
 
-        StringBuilder choices = new StringBuilder("^" + player.getPawns().get(0).getNumber() + "$");
+        StringBuilder choices = new StringBuilder("^" + player.getPawns().get(0).getNUMBER() + "$");
         for (Pawn p : player.getPawns()) {
-            if (p.getNumber() != -1) choices.append("|^").append(p.getNumber()).append("$");
+            if (p.getNUMBER() != -1) choices.append("|^").append(p.getNUMBER()).append("$");
             else choices.append("|^z$");
         }
-        String input = this.getInputRegex(player.getNAME() + ", " + Language.getText("pawn question"), new String(choices),
-                Language.getText("pawn error"));
+        String input = InputUtilities.getInputRegex(player.getNAME() + ", " + Language.getText("pawn question"), new String(choices),
+                Language.getText("pawn error"), this.game);
         if (input.equals("z")) input = "-1";
         coordinates[0] = Integer.parseInt(input);
 
         if (this.level == Level.HARD) {
-            coordinates[1] = Integer.parseInt(this.getInputRegex(Language.getText("line question"), "^[0-9]|10$",
-                    Language.getText("number input error")));
-            coordinates[2] = InputUtilities.charToInt(this.getInputRegex(Language.getText("column question"), "^[a-k]|[A-K]$",
-                    Language.getText("letter input error")).charAt(0));
+            coordinates[1] = Integer.parseInt(InputUtilities.getInputRegex(Language.getText("line question"), "^[0-9]|10$",
+                    Language.getText("number input error"), this.game));
+            coordinates[2] = InputUtilities.charToInt(InputUtilities.getInputRegex(Language.getText("column question"), "^[a-k]|[A-K]$",
+                    Language.getText("letter input error"), this.game).charAt(0));
         } else {
             System.out.println(Language.getText("assisted displacement question"));
-            String s = this.getInputRegex(null, "^[nsew]$|^[ns][ew]$", Language.getText("character input error"));
+            String s = InputUtilities.getInputRegex(null, "^[nsew]$|^[ns][ew]$", Language.getText("character input error"), this.game);
             Pawn p = player.getPawns().get(coordinates[0]);
             coordinates[1] = p.getLineIndex();
             coordinates[2] = p.getColumnIndex();
@@ -113,111 +158,41 @@ public class Console implements GameMode {
                     coordinates[2] = p.getColumnIndex() - i;
                     break;
             }
-            if (MatrixUtilities.isOutOfMatrix(board, coordinates[1], coordinates[2])) {
-                this.cannotMove();
-                coordinates = this.play(player, board);
-            }
         }
         return coordinates;
     }
 
+    /**
+     * Prints a message that says that the move is incorrect.
+     */
     @Override
     public void cannotMove() {
         System.out.println(Language.getText("pawn displacement error"));
     }
 
+    /**
+     * Prints a message that says that the Zen was already at this position.
+     */
     @Override
     public void zenAlreadyPlaced() {
         System.out.print(Language.getText("zen displacement error"));
     }
 
+    /**
+     * Asks the user a path ending with .ser
+     * @return the path
+     */
     @Override
     public String saveAs() {
-        return this.getInputRegex(Language.getText("get path"), "^.+\\.ser$", Language.getText("ser error"));
+        return InputUtilities.getInputRegex(Language.getText("get path"), "^.+\\.ser$", Language.getText("ser error"), this.game);
     }
 
+    /**
+     * Prints a message saying that the save of the game has not been performed due to a problem with the file/path.
+     */
     @Override
     public void saveAsFailure() {
         System.out.println(Language.getText("save error"));
-    }
-
-    public boolean getConfirmation(String message) {
-        System.out.println(message);
-        Scanner scanner = new Scanner(System.in);
-        String confirmation = scanner.next();
-        while (!confirmation.equals("y") && !confirmation.equals("yes") && !confirmation.equals("n") && !confirmation.equals("no")
-                && !confirmation.equals("Y") && !confirmation.equals("N")) {
-            System.out.println(Language.getText("yn input error"));
-            confirmation = scanner.next();
-        }
-        return confirmation.equals("y") || confirmation.equals("Y") || confirmation.equals("yes");
-    }
-
-    public String getInputRegex(String message, String regex, String errorMessage) {
-        String s;
-        if (message != null) {
-            System.out.println(message);
-        }
-        boolean error = false;
-        Scanner scanner = new Scanner(System.in);
-        do {
-            if (error && errorMessage != null) System.out.println(errorMessage);
-            s = scanner.nextLine();
-            this.checkQuit(s);
-            this.checkMenu(s);
-            this.checkLanguage(s);
-            this.checkRestart(s);
-            this.checkSave(s);
-            error = true;
-        } while (!s.matches(regex));
-        return s;
-    }
-
-    private void checkLanguage(String s) {
-        if (s.equals("fr")) {
-            Language.setLanguage(Language.Languages.FRENCH);
-            System.out.println("langue changée");
-        } else if (s.equals("en")) {
-            Language.setLanguage(Language.Languages.ENGLISH);
-            System.out.println("language changed");
-        }
-    }
-
-    private void checkQuit(String s) {
-        if (s.length() >= 1 && (s.equals("q") || s.equals("Q") || s.equals("quit") || s.equals("exit"))) {
-            if (this.getConfirmation(Language.getText("quit confirmation"))) {
-                System.exit(0);
-            }
-        }
-    }
-
-    private void checkMenu(String s) {
-        if (s.equals("menu") || s.equals("m")) {
-            if (this.getConfirmation(Language.getText("menu confirmation"))) {
-                ConsoleMenu.showMenu(this);
-            }
-        }
-    }
-
-    private void checkRestart(String s) {
-        if (s.equals("r") || s.equals("replay")) {
-            try {
-                this.game.replay();
-            } catch (Exception e) {
-                System.out.println(Language.getText("replay error"));
-            }
-        }
-    }
-
-    private void checkSave(String s) {
-        if (s.equals("save")) {
-            try {
-                this.game.saveGame();
-                System.out.println(Language.getText("game saved"));
-            } catch (Exception e) {
-                System.out.println(Language.getText("replay error"));
-            }
-        }
     }
 
 }

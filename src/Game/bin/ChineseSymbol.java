@@ -1,4 +1,4 @@
-package Game.bin;
+package game.bin;
 
 import java.awt.*;
 
@@ -10,7 +10,7 @@ public class ChineseSymbol extends Element {
     /**
      * the image of the object
      */
-    private final Image icon;
+    private final Image ICON;
 
     /**
      * Constructor of the class that initializes the image and that also sets
@@ -24,7 +24,7 @@ public class ChineseSymbol extends Element {
     public ChineseSymbol(int lineIndex, int columnIndex, Image icon) {
         super(lineIndex, columnIndex);
         if (icon != null) {
-            this.icon = icon;
+            this.ICON = icon;
         } else {
             throw new IllegalArgumentException();
         }
@@ -40,8 +40,7 @@ public class ChineseSymbol extends Element {
     @Override
     public void paint(Graphics g) {
         super.paint(g);
-        Image image = this.icon.getScaledInstance(Element.sizeUnity, Element.sizeUnity, Image.SCALE_DEFAULT);
-        g.drawImage(image, (this.getColumnIndex() + 1) * Element.sizeUnity, (this.getLineIndex() + 1) * Element.sizeUnity, null);
+        Image image = this.ICON.getScaledInstance(Element.getSizeUnity(), Element.getSizeUnity(), Image.SCALE_DEFAULT);
+        g.drawImage(image, (this.getColumnIndex() + 1) * Element.getSizeUnity(), (this.getLineIndex() + 1) * Element.getSizeUnity(), null);
     }
-
 }

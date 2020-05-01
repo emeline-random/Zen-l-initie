@@ -1,91 +1,72 @@
-package Game.View;
+package game.view;
 
 import com.formdev.flatlaf.FlatDarculaLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 
 import javax.swing.*;
 
+/**
+ * Java class that allows to change the scheme of the application in graphic view by setting
+ * the appropriate LookAndFeel in the UIManager. This class uses the flatlaf library
+ * to provides a light and a dark scheme.
+ */
 public class SwitchScheme {
 
+    /**Allows to stock the current used scheme*/
     private static Scheme currentScheme;
 
-    enum Scheme {
+    /**The available schemes*/
+    public enum Scheme {
         LIGHT,
         DARK,
         NIMBUS,
         SYSTEM,
-        MENU
     }
 
+    /**
+     * Allows to change the scheme of the application depending
+     * on the given scheme.
+     * @param scheme the chosen scheme
+     */
     public static void switchScheme(Scheme scheme) {
+        currentScheme = scheme;
         switch (scheme) {
             case DARK:
-                try {
-                    UIManager.setLookAndFeel(new FlatDarculaLaf());
-                    updateUIDefaults();
-                    currentScheme = scheme;
-                } catch (Exception ex) {
-                    switchScheme(Scheme.SYSTEM);
-                }
+                changeScheme(FlatDarculaLaf.class.getName());
                 break;
             case LIGHT:
-                try {
-                    UIManager.setLookAndFeel(new FlatLightLaf());
-                    updateUIDefaults();
-                    currentScheme = scheme;
-                } catch (Exception ex) {
-                    switchScheme(Scheme.SYSTEM);
-                }
+                changeScheme(FlatLightLaf.class.getName());
                 break;
             case NIMBUS:
                 for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
                     if ("Nimbus".equals(info.getName())) {
-                        try {
-                            UIManager.setLookAndFeel(info.getClassName());
-                            updateUIDefaults();
-                            currentScheme = scheme;
-                        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
-                            switchScheme(Scheme.LIGHT);
-                        }
+                        changeScheme(info.getClassName());
                         break;
                     }
                 }
                 break;
             case SYSTEM:
-                try {
-                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-                    updateUIDefaults();
-                    currentScheme = scheme;
-                } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
-                    e.printStackTrace();
-                }
+                    changeScheme(UIManager.getSystemLookAndFeelClassName());
                 break;
-            case MENU:
-                try {
-                    UIManager.setLookAndFeel(new MenuUIDefaults());
-                    currentScheme = scheme;
-                } catch (UnsupportedLookAndFeelException e) {
-                    switchScheme(Scheme.LIGHT);
-                }
         }
     }
 
-    public static void updateUIDefaults() {
-        UIDefaults defaults = UIManager.getLookAndFeel().getDefaults();
-        UIManager.put("Button.background", defaults.get("Button.background"));
-        UIManager.put("Button.foreground", defaults.get("Button.foreground"));
-        UIManager.put("Button.font", defaults.get("Button.font"));
-        UIManager.put("Panel.background", defaults.get("Panel.background"));
-        UIManager.put("Panel.font", defaults.get("Panel.font"));
-        UIManager.put("Label.font", defaults.get("Label.font"));
+    /**
+     * Allows to change the LookAndFeel of the UIManager using the className of the new laf.
+     * @param laf the new LookAndFeel classname.
+     */
+    private static void changeScheme(String laf){
+        try {
+            UIManager.setLookAndFeel(laf);
+        } catch (UnsupportedLookAndFeelException | ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+            switchScheme(Scheme.LIGHT);
+        }
     }
 
+    /**
+     * @return the current scheme
+     */
     public static Scheme getCurrentScheme() {
         return SwitchScheme.currentScheme;
     }
-
-    public static Scheme[] getSchemes() {
-        return new Scheme[]{Scheme.LIGHT, Scheme.DARK, Scheme.NIMBUS, Scheme.SYSTEM};
-    }
-
 }
