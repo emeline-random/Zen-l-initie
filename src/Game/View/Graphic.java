@@ -41,6 +41,7 @@ public class Graphic implements GameMode {
             throw new IllegalArgumentException();
         }
     }
+
     /**
      * Allows to set the current game and the pair and impair colors
      * of the board depending on both players chosen colors.

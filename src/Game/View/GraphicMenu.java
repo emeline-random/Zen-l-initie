@@ -3,7 +3,7 @@ package game.view;
 import game.bin.Element;
 import game.bin.artificialPlayers.*;
 import game.controller.Game;
-import game.controller.MenuListener;
+import game.controller.MenuListeners;
 import utilities.GameColor;
 import utilities.Language;
 import utilities.RoundRectButton;
@@ -12,6 +12,7 @@ import utilities.Sound;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 
 /**
@@ -57,7 +58,7 @@ public class GraphicMenu extends JFrame {
     /**
      * The listener that will listen to all of the buttons in the menu
      */
-    private MenuListener listener;
+    private MenuListeners listener;
 
     /**
      * Allows to call the configuration of the menu frame and to block the application thread
@@ -83,7 +84,7 @@ public class GraphicMenu extends JFrame {
      */
     protected void configFrame() {
         SwitchScheme.switchScheme(SwitchScheme.Scheme.LIGHT);
-        this.listener = new MenuListener(this);
+        this.listener = new MenuListeners(this);
         this.setSize(930, 535);
         this.setTitle("Zen l'Initié");
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -139,8 +140,7 @@ public class GraphicMenu extends JFrame {
             }
         };
         home.setBackground(new Color(26, 14, 5));
-        this.listener.setHome(home);
-        home.addActionListener(this.listener);
+        home.addActionListener(this.listener.homeListener());
         home.setFocusable(false);
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.weightx = 1;
@@ -167,12 +167,9 @@ public class GraphicMenu extends JFrame {
         JButton newGame = new RoundRectButton(Language.getText("new"), 10, 5, this);
         JButton resumeGame = new RoundRectButton(Language.getText("resume"), 10, 5, this);
         JButton rules = new RoundRectButton(Language.getText("see rules"), 10, 5, this);
-        this.listener.setNewGame(newGame);
-        newGame.addActionListener(this.listener);
-        this.listener.setResumeGame(resumeGame);
-        resumeGame.addActionListener(this.listener);
-        this.listener.setRules(rules);
-        rules.addActionListener(this.listener);
+        newGame.addActionListener(this.listener.newGameListener());
+        resumeGame.addActionListener(this.listener.resumeGameListener());
+        rules.addActionListener(this.listener.rulesListener());
         rules.setFocusable(false);
         this.centerPanel = new JPanel();
         this.centerPanel.add(newGame);
@@ -204,8 +201,7 @@ public class GraphicMenu extends JFrame {
                 super.paintComponent(graphics);
             }
         };
-        this.listener.setSound(sound);
-        sound.addActionListener(this.listener);
+        sound.addActionListener(this.listener.soundListener(sound));
         sound.setBackground(new Color(26, 14, 5));
         sound.setFocusable(false);
         return sound;
@@ -255,11 +251,10 @@ public class GraphicMenu extends JFrame {
         JButton onePlayer = new RoundRectButton("1 " + Language.getText("player"), 10, 5, this);
         JButton twoPlayers = new RoundRectButton("2 " + Language.getText("players"), 10, 5, this);
         JButton demo = new RoundRectButton("Demo", 10, 5, this);
-        this.listener.setOnePlayer(onePlayer);
-        onePlayer.addActionListener(this.listener);
-        this.listener.setTwoPlayers(twoPlayers);
-        twoPlayers.addActionListener(this.listener);
-        this.listener.setDemo(demo);
+        ActionListener listener = this.listener.playerNumberListener(onePlayer, twoPlayers);
+        onePlayer.addActionListener(listener);
+        twoPlayers.addActionListener(listener);
+        demo.addActionListener(this.listener.demoListener());
         this.centerPanel.add(onePlayer);
         this.centerPanel.add(twoPlayers);
         this.centerPanel.setOpaque(false);
@@ -301,7 +296,7 @@ public class GraphicMenu extends JFrame {
         JComboBox<GameColor> colors2 = new JComboBox<>(model2);
 
         JButton button = new RoundRectButton(Language.getText("start"), 10, 10, this);
-        button.addActionListener(this.listener.getStartButtonListener(name1, graphicBox, consoleBox, playerNumber, colors1, colors2, name2, level, playerJComboBox));
+        button.addActionListener(this.listener.startButtonListener(name1, graphicBox, consoleBox, playerNumber, colors1, colors2, name2, level, playerJComboBox));
         if (playerNumber == 2) this.centerPanel.setLayout(new GridLayout(4, 3));
         else this.centerPanel.setLayout(new GridLayout(3, 3));
         this.centerPanel.setBackground(new Color(230, 216, 202));
@@ -336,12 +331,11 @@ public class GraphicMenu extends JFrame {
      * @return the panel with JButtons that change the language
      */
     private JPanel createLanguagePanel() {
-        JButton fr = new JButton(new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/pictures/france.png"))));//"src/pictures/france.png"));
-        JButton en = new JButton(new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/pictures/english.png"))));//"src/pictures/english.png"));
-        this.listener.setFr(fr);
-        fr.addActionListener(this.listener);
-        this.listener.setEn(en);
-        en.addActionListener(this.listener);
+        JButton fr = new JButton(new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/pictures/france.png"))));
+        JButton en = new JButton(new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/pictures/english.png"))));
+        ActionListener listener = this.listener.languageListener(fr, en);
+        fr.addActionListener(listener);
+        en.addActionListener(listener);
         JPanel languages = new JPanel() {
             @Override
             public void paintComponent(Graphics g) {
