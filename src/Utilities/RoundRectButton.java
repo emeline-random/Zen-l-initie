@@ -1,9 +1,9 @@
 package utilities;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import javax.swing.*;
 
 /**
  * Java class that allows to create a JButton object that has a rounded rectangular shape
@@ -33,7 +33,12 @@ public class RoundRectButton extends JButton {
     /**
      * The JFrame where the button is
      */
-    private JFrame master;
+    private final JFrame master;
+    /**
+     * The actual font used in the button
+     */
+    private Font font;
+    private final String label;
 
     /**
      * Constructor of the class, allows to create a RoundRectButton object
@@ -47,20 +52,15 @@ public class RoundRectButton extends JButton {
      * @param frame          the frame where the button is
      */
     public RoundRectButton(String label, int arc, int fontPercentage, JFrame frame) {
-        super(label);
+        super();
+        this.label = label;
+        this.font = this.getFont();
         this.setBackground(new Color(26, 14, 5));
         this.setForeground(new Color(230, 216, 202));
-        if (!this.getFont().getName().equals("Arial Rounded MT Bold")) {
-            this.setFont(new Font("Arial Rounded MT Bold", Font.PLAIN, 17));
-        }
         if (arc >= 0 && fontPercentage >= 0 && frame != null) {
             this.arc = arc;
             this.fontPercentage = fontPercentage;
             this.master = frame;
-            this.configButton();
-        } else if (arc >= 0) {
-            this.fontPercentage = -1;
-            this.arc = arc;
             this.configButton();
         } else {
             throw new IllegalArgumentException("RoundRectButton constructor exception");
@@ -102,17 +102,20 @@ public class RoundRectButton extends JButton {
      */
     @Override
     protected void paintComponent(Graphics g) {
-        if (getModel().isPressed()) {
-            g.setColor(Color.lightGray);
+        if (getModel().isPressed()) g.setColor(Color.lightGray);
+        else g.setColor(this.getBackground());
+        if (this.font.getSize() != (int) (this.fontSize + (this.fontPercentage / 1000d) * this.master.getWidth() * 2)) {
+            this.font = new Font("Arial Rounded MT Bold", Font.PLAIN, (int) (this.fontSize +
+                    (this.fontPercentage / 1000d) * this.master.getWidth() * 2));
+            this.setFont(this.font);
+            this.setText(this.label);
         } else {
-            g.setColor(this.getBackground());
+            g.fillRoundRect(0, 0, getSize().width - 1, getSize().height - 1, this.arc, this.arc);
+            g.setColor(this.getForeground());
+            g.drawRoundRect(0, 0, getSize().width - 1, getSize().height - 1, this.arc, this.arc);
+            super.paintComponent(g);
+            this.paintBorder(g);
         }
-        if (this.fontPercentage != -1) {
-            this.setFont(new Font(this.getFont().getName(), Font.PLAIN,
-                    (int) (this.fontSize + (this.fontPercentage / 1000d) * this.master.getWidth() * 2)));
-        }
-        g.fillRoundRect(0, 0, getSize().width - 1, getSize().height - 1, this.arc, this.arc);
-        super.paintComponent(g);
     }
 
     /**
@@ -123,12 +126,7 @@ public class RoundRectButton extends JButton {
      */
     @Override
     protected void paintBorder(Graphics g) {
-        if (this.isMouseIn) {
-            this.paintMouseInBorder(g);
-        } else {
-            g.setColor(this.getForeground());
-            g.drawRoundRect(0, 0, getSize().width - 1, getSize().height - 1, this.arc, this.arc);
-        }
+        if (this.isMouseIn) this.paintMouseInBorder(g);
     }
 
     /**

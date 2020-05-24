@@ -1,6 +1,9 @@
 package game.controller;
 
-import game.bin.*;
+import game.model.Element;
+import game.model.Level;
+import game.model.Pawn;
+import game.model.Player;
 import game.view.GraphicalInterface;
 import utilities.InputUtilities;
 import utilities.MatrixUtilities;
@@ -43,6 +46,7 @@ public class BoardAndInputListeners {
      * @param level  the level of the game
      * @param line   the JTextField containing the line index in HARD mode
      * @param column the JTextField containing the column index in HARD mode
+     * @return MouseAdapter the adapter made to handle actions on the board
      */
     public MouseAdapter boardListener(Level level, Element[][] board, JTextField line, JTextField column) {
         return new MouseAdapter() {

@@ -1,8 +1,8 @@
 package game.controller;
 
-import game.bin.ChineseSymbol;
-import game.bin.Element;
-import game.bin.Level;
+import game.model.ChineseSymbol;
+import game.model.Element;
+import game.model.Level;
 import game.view.GraphicMenu;
 import game.view.GraphicalInterface;
 import utilities.Language;

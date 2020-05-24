@@ -1,9 +1,10 @@
 package game.view;
 
-import game.bin.artificialPlayers.*;
+import game.model.*;
 import game.controller.*;
-import game.bin.Level;
-import game.bin.Player;
+import game.model.artificialPlayers.ArtificialPlayer;
+import game.model.artificialPlayers.FirstLevel;
+import game.model.artificialPlayers.SecondLevel;
 import utilities.GameColor;
 import utilities.InputUtilities;
 import utilities.Language;

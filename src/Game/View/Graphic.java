@@ -1,10 +1,10 @@
 package game.view;
 
 import game.controller.Game;
-import game.bin.ChineseSymbol;
-import game.bin.Level;
-import game.bin.Element;
-import game.bin.Player;
+import game.model.ChineseSymbol;
+import game.model.Level;
+import game.model.Element;
+import game.model.Player;
 import utilities.Language;
 
 import javax.swing.*;

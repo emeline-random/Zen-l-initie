@@ -1,7 +1,7 @@
 package utilities;
 
-import game.bin.Element;
-import game.bin.Pawn;
+import game.model.Element;
+import game.model.Pawn;
 
 import java.util.ArrayList;
 

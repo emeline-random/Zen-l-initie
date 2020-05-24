@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<project name="Zen l'initié" default="run" basedir=".">
+    <description>
+        build file, can be used to compile/run the program and to create jar
+    </description>
+    <!-- properties of the file-->
+    <property name="home" location=".."/>
+    <property name="src" location="${home}\src"/>
+    <property name="out" location="${home}\out"/>
+    <property name="production" location="${out}\production\Zen_l_initie"/>
+    <property name="jar" location="${out}\artifacts"/>
+    <property name="lib" location="${home}\lib"/>
+    <property name="testResults" location="${out}\tests"/>
+    <path id="appPath">
+        <path location="${lib}\flatlaf-0.33.jar"/>
+        <path location="${lib}\junit-4.12.jar"/>
+        <path location="${lib}\junit-jupiter-api-5.4.2.jar"/>
+        <path location="${lib}\apiguardian-api-1.0.0.jar"/>
+        <path location="${lib}\hamcrest-all-1.3.jar"/>
+        <path location="${lib}\opentest4j-1.1.1.jar"/>
+    </path>
+
+    <target name="clean" description="delete out directory">
+        <delete dir="${out}"/>
+    </target>
+
+    <target name="init" description="create output directory">
+        <tstamp/>
+        <mkdir dir="${production}"/>
+    </target>
+
+    <target name="compile" depends="init" description="compile files">
+        <javac srcdir="${src}"  destdir="${production}">
+            <classpath refid="appPath"/>
+        </javac>
+    </target>
+
+    <target name="run" depends="build jar" description="run the program">
+        <java fork="true" jar="${jar}\zenLInitie-${DSTAMP}.jar"/>
+    </target>
+
+    <target name="build jar" depends="compile" description="create the jar">
+        <mkdir dir="${jar}"/>
+        <jar destfile="${jar}\zenLInitie-${DSTAMP}.jar" basedir="${production}">
+            <manifest>
+                <attribute name="Main-class" value="game.Main"/>
+            </manifest>
+            <zipgroupfileset  dir="${lib}"/>
+        </jar>
+    </target>
+
+    <target name="tests">
+
+        <delete dir="${testResults}"/>
+        <mkdir dir="${testResults}"/>
+
+        <junit printsummary="true" haltonfailure="false" fork="true">
+            <classpath>
+                <path refid="appPath"/>
+                <pathelement path="${java.class.path}"/>
+                <pathelement location="${production}\tests"/>
+                <pathelement location="${production}"/>
+                <pathelement location="/tests"/>
+                <pathelement location="${src}"/>
+            </classpath>
+
+            <formatter type="xml"/>
+
+            <batchtest todir="${testResults}">
+                <fileset dir="${src}">
+                    <include name="**\*Test*"/>
+                </fileset>
+            </batchtest>
+        </junit>
+
+        <junitreport todir="${testResults}">
+            <fileset dir="${testResults}">
+                <include name="*.xml"/>
+            </fileset>
+            <report format="frames" todir="${testResults}"/>
+        </junitreport>
+
+    </target>
+
+    <target name="javadoc" description="generate javadoc in out/doc">
+        <delete dir="${out}\javadoc"/>
+        <mkdir dir="${out}\javadoc"/>
+        <javadoc sourcepath="${src}" destdir="${out}\javadoc">
+            <classpath refid="appPath"/>
+        </javadoc>
+    </target>
+
+</project>

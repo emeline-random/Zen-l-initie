@@ -1,7 +1,10 @@
 package game.view;
 
 import game.controller.Game;
-import game.bin.*;
+import game.model.Element;
+import game.model.Level;
+import game.model.Pawn;
+import game.model.Player;
 import utilities.InputUtilities;
 import utilities.Language;
 import utilities.MatrixUtilities;

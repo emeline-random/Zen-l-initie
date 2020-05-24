@@ -1,8 +1,5 @@
 package game.model;
 
-import game.bin.Element;
-import game.bin.ChineseSymbol;
-import game.bin.Pawn;
 import utilities.GameColor;
 
 import javax.imageio.ImageIO;

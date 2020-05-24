@@ -1,10 +1,9 @@
-package Tests;
+package tests;
 
-import game.bin.Pawn;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import game.model.Pawn;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import utilities.GameColor;
 import utilities.MatrixUtilities;
 
@@ -13,28 +12,43 @@ import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class MatrixUtilitiesTest {
+/**
+ * Allows to test the MatrixUtilities class
+ */
+public class MatrixUtilitiesTest {
 
+    /**
+     * The object matrix used in all tests
+     */
     private Object[][] objects;
+    /**
+     * A pawn object used in all tests
+     */
     private static Pawn p;
 
-    @BeforeAll
-    static void startUp() {
+    /**
+     * Allows to reset the values of the objects matrix and the pawn before each test
+     */
+    @Before
+    public void startUp() {
         p = new Pawn(GameColor.BLUE, 5);
-    }
-
-    @BeforeEach
-    void setUp() {
         this.objects = new Object[5][5];
     }
 
-    @AfterEach
-    void tearDown() {
+    /**
+     * Allows to delete the objects matrix.
+     */
+    @After
+    public void tearDown() {
         this.objects = null;
     }
 
+    /**
+     * Allows to perform some correct and error cases of the isOutOfMatrix method.
+     * Checks that it returns true if the value given are out of bounds
+     */
     @Test
-    void isOutOfMatrix() {
+    public void isOutOfMatrix() {
         assertTrue(MatrixUtilities.isOutOfMatrix(this.objects, 5, 0));
         assertTrue(MatrixUtilities.isOutOfMatrix(this.objects, -1, 0));
         assertTrue(MatrixUtilities.isOutOfMatrix(this.objects, 0, 5));
@@ -44,8 +58,13 @@ class MatrixUtilitiesTest {
         assertFalse(MatrixUtilities.isOutOfMatrix(this.objects, 2, 4));
     }
 
+    /**
+     * Allows to test the countObjectLine() method by checking the number returned
+     * when adding the pawn of the class to some squares. The comparison is made
+     * on different lines.
+     */
     @Test
-    void countObjectLine() {
+    public void countObjectLine() {
         assertEquals(0, MatrixUtilities.countObjectLine(this.objects, 2));
         this.objects[2][3] = p;
         assertEquals(1, MatrixUtilities.countObjectLine(this.objects, 2));
@@ -56,8 +75,13 @@ class MatrixUtilitiesTest {
         assertEquals(1, MatrixUtilities.countObjectLine(this.objects, 3));
     }
 
+    /**
+     * Allows to test the countObjectColumn() method by checking the number returned
+     * when adding the pawn of the class to some squares. The comparison is made
+     * on different columns.
+     */
     @Test
-    void countObjectColumn() {
+    public void countObjectColumn() {
         assertEquals(0, MatrixUtilities.countObjectColumn(this.objects, 2));
         this.objects[3][2] = p;
         assertEquals(1, MatrixUtilities.countObjectColumn(this.objects, 2));
@@ -68,8 +92,14 @@ class MatrixUtilitiesTest {
         assertEquals(1, MatrixUtilities.countObjectColumn(this.objects, 3));
     }
 
+    /**
+     * Allows to test the countObjectDiagAsc() method by checking the number returned
+     * when adding the pawn of the class to some squares. The comparison is made
+     * on different ascending diagonals (an ascending diagonal is a diagonal that goes
+     * from left bottom to right top).
+     */
     @Test
-    void countObjectDiagAsc() {
+    public void countObjectDiagAsc() {
         assertEquals(0, MatrixUtilities.countObjectDiagAsc(this.objects, 2, 3));
         this.objects[2][3] = p;
         assertEquals(1, MatrixUtilities.countObjectDiagAsc(this.objects, 2, 3));
@@ -80,8 +110,14 @@ class MatrixUtilitiesTest {
         assertEquals(1, MatrixUtilities.countObjectDiagAsc(this.objects, 1, 1));
     }
 
+    /**
+     * Allows to test the countObjectDiagDesc() method by checking the number returned
+     * when adding the pawn of the class to some squares. The comparison is made
+     * on different descending diagonals (a descending diagonal is a diagonal that goes
+     * from left top to right bottom).
+     */
     @Test
-    void countObjectDiagDesc() {
+    public void countObjectDiagDesc() {
         assertEquals(0, MatrixUtilities.countObjectDiagDesc(this.objects, 2, 3));
         this.objects[2][3] = p;
         assertEquals(1, MatrixUtilities.countObjectDiagDesc(this.objects, 2, 3));
@@ -92,8 +128,13 @@ class MatrixUtilitiesTest {
         assertEquals(1, MatrixUtilities.countObjectDiagDesc(this.objects, 1, 1));
     }
 
+    /**
+     * Allows to test the pointsConnected() method by adding and removing
+     * pawns from the ArrayList in which the points that should be connected
+     * are and adding pawns to the objects matrix.
+     */
     @Test
-    void pointsConnected() {
+    public void pointsConnected() {
         Pawn p1 = new Pawn(GameColor.BLUE, 5);
         Pawn p2 = new Pawn(GameColor.BLUE, 5);
         Pawn p3 = new Pawn(GameColor.BLUE, 5);
@@ -111,8 +152,12 @@ class MatrixUtilitiesTest {
         assertTrue(MatrixUtilities.pointsConnected(this.objects, pawns));
     }
 
+    /**
+     * Allows to check that the getNeighbours method returns the correct
+     * number of neighbours in different cases (diagonally particularly).
+     */
     @Test
-    void getNeighbours() {
+    public void getNeighbours() {
         Pawn p1 = new Pawn(GameColor.BLUE, 5);
         Pawn p2 = new Pawn(GameColor.BLUE, 5);
         Pawn p3 = new Pawn(GameColor.BLUE, 5);
@@ -137,8 +182,13 @@ class MatrixUtilitiesTest {
         assertEquals(2, MatrixUtilities.getNeighbours(this.objects, 2, 4, pawns).size());
     }
 
+    /**
+     * Allows to check that the meetAdverse() method returns the correct value. To do this, to
+     * ArrayList of pawns are created (one for each player) and the pawns of these lists are add
+     * to the objects matrix. Then different tests in different configurations are performed.
+     */
     @Test
-    void meetAdverse() {
+    public void meetAdverse() {
         Pawn p1 = new Pawn(GameColor.BLUE, 5);
         Pawn p2 = new Pawn(GameColor.BLUE, 5);
         Pawn p3 = new Pawn(GameColor.BLUE, 5);

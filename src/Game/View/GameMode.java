@@ -2,8 +2,8 @@ package game.view;
 
 
 import game.controller.Game;
-import game.bin.Element;
-import game.bin.Player;
+import game.model.Element;
+import game.model.Player;
 
 /**
  * Allows to establish the needed functions for the views of the application.
@@ -12,21 +12,30 @@ public interface GameMode {
 
     /**
      * Has to set the game displayed by the view
+     * @param game the game to display
      */
     void setGame(Game game);
 
     /**
      * Has to display the board and then needs to call the play() method of the game
+     * @param game the game to restart
+     * @param board the board of the game
      */
     void restartGame(Game game, Element[][] board);
 
     /**
      * Has to print a little message with the winner and the number of points of both players, then displays the menu
+     * @param winner The winner of the game
+     * @param looser The looser of the game
+     * @param equality true if both players won
      */
     void endGame(Player winner, Player looser, boolean equality);
 
     /**
      * Has to actualize the view of the board when a pawn is moved.
+     * @param player The player that moved his pawn
+     * @param move the move made
+     * @param board the actualized board
      */
     void movePawn(Player player, int[] move, Element[][] board);
 

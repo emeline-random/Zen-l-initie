@@ -1,37 +1,58 @@
-package Tests;
+package tests;
 
-import game.bin.Player;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import game.model.Player;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import utilities.GameColor;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class PlayerTest {
+/**
+ * Allows to test the Player class
+ */
+public class PlayerTest {
 
+    /**
+     * the player used in tests
+     */
     Player player;
 
-    @BeforeEach
-    void setUp() {
+    /**
+     * reset the value of the player before each test
+     */
+    @Before
+    public void setUp() {
         this.player = new Player("Name", GameColor.RED);
     }
 
-    @AfterEach
-    void tearDown() {
+    /**
+     * delete the player
+     */
+    @After
+    public void tearDown() {
         this.player = null;
     }
 
+    /**
+     * Allows to check that the resetPawns() method reset the number of pawns in the
+     * player's pawns list to the value defined in the Player class.
+     */
     @Test
-    void resetPawns() {
+    public void resetPawns() {
         this.player.getPawns().clear();
         assertEquals(0, this.player.getPawns().size());
         this.player.resetPawns();
         assertEquals(Player.getPAWNS_NUMBER(), this.player.getPawns().size());
     }
 
+    /**
+     * Allows to check that the addPoint() method as one point to
+     * the number of points of the player. To do this, some points
+     * are added and then the getPoints() method is used.
+     */
     @Test
-    void addPoint() {
+    public void addPoint() {
         assertEquals(0, this.player.getPoints());
         this.player.addPoint();
         assertEquals(1, this.player.getPoints());
@@ -40,8 +61,11 @@ class PlayerTest {
         assertEquals(3, this.player.getPoints());
     }
 
+    /**
+     * Allows to check briefly the setPlaying() method
+     */
     @Test
-    void setPlaying() {
+    public void setPlaying() {
         assertFalse(this.player.isPlaying());
         this.player.setPlaying(true);
         assertTrue(this.player.isPlaying());
@@ -49,8 +73,11 @@ class PlayerTest {
         assertFalse(this.player.isPlaying());
     }
 
+    /**
+     * Allows to check briefly the setArtificialPlayer() method
+     */
     @Test
-    void setArtificialPlayer() {
+    public void setArtificialPlayer() {
         assertFalse(this.player.isArtificialPlayer());
         this.player.setArtificialPlayer(true);
         assertTrue(this.player.isArtificialPlayer());
@@ -58,38 +85,55 @@ class PlayerTest {
         assertFalse(this.player.isArtificialPlayer());
     }
 
+    /**
+     * Allows to check that the getPawn() method returns the correct pawn
+     * in the ArrayList, or null if the asked pawn does not exist in the
+     * ArrayList of the player.
+     */
     @Test
-    void getPawn() {
+    public void getPawn() {
         assertEquals(this.player.getPawns().get(0), this.player.getPawn(0));
         assertEquals(this.player.getPawns().get(11), this.player.getPawn(11));
         assertNull(this.player.getPawn(12));
         assertNull(this.player.getPawn(-1));
     }
 
+    /**
+     * Allows to check briefly the getPawns() method
+     */
     @Test
-    void getPawns() {
+    public void getPawns() {
         this.player.resetPawns();
         assertEquals(12, this.player.getPawns().size());
         this.player.getPawns().remove(0);
         assertEquals(11, this.player.getPawns().size());
     }
 
+    /**
+     * Allows to check briefly the getCOLOR() method
+     */
     @Test
-    void getCOLOR() {
+    public void getCOLOR() {
         assertEquals(GameColor.RED, this.player.getCOLOR());
         Player p = new Player("name", GameColor.BLUE);
         assertEquals(GameColor.BLUE, p.getCOLOR());
     }
 
+    /**
+     * Allows to check briefly the getNAME() method
+     */
     @Test
-    void getNAME() {
+    public void getNAME() {
         assertEquals("Name", this.player.getNAME());
         Player p = new Player("Jean", GameColor.BLUE);
         assertEquals("Jean", p.getNAME());
     }
 
+    /**
+     * Allows to check briefly the getPAWNS_NUMBER() method
+     */
     @Test
-    void getPAWNS_NUMBER() {
+    public void getPAWNS_NUMBER() {
         assertEquals(12, Player.getPAWNS_NUMBER());
     }
 }

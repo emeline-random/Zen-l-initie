@@ -1,7 +1,9 @@
 package game.view;
 
-import game.bin.Element;
-import game.bin.artificialPlayers.*;
+import game.model.artificialPlayers.ArtificialPlayer;
+import game.model.Element;
+import game.model.artificialPlayers.FirstLevel;
+import game.model.artificialPlayers.SecondLevel;
 import game.controller.Game;
 import game.controller.MenuListeners;
 import utilities.GameColor;
@@ -188,7 +190,7 @@ public class GraphicMenu extends JFrame {
      * @return the sound button
      */
     private JButton createSoundButton() {
-        JButton sound = new JButton() {
+        JButton sound = new JButton(){
             @Override
             public void paintComponent(Graphics graphics) {
                 Image i;

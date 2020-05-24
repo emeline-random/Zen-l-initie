@@ -1,8 +1,8 @@
 package game.controller;
 
-import game.bin.Level;
-import game.bin.Player;
-import game.bin.artificialPlayers.ArtificialPlayer;
+import game.model.Level;
+import game.model.Player;
+import game.model.artificialPlayers.ArtificialPlayer;
 import game.view.*;
 import utilities.GameColor;
 import utilities.Language;

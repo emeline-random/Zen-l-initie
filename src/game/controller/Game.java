@@ -1,11 +1,10 @@
 package game.controller;
 
-import game.model.GameBoard;
+import game.model.*;
+import game.model.artificialPlayers.ArtificialPlayer;
 import game.view.Console;
 import game.view.GameMode;
 import game.view.Graphic;
-import game.bin.artificialPlayers.ArtificialPlayer;
-import game.bin.*;
 import utilities.Language;
 import utilities.MatrixUtilities;
 import utilities.Sound;

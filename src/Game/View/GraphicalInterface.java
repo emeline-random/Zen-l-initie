@@ -1,21 +1,18 @@
 package game.view;
 
-import game.controller.*;
-import game.model.GameBoard;
-import game.bin.*;
+import game.controller.BoardAndInputListeners;
+import game.controller.Game;
+import game.controller.MenuBarListeners;
+import game.model.*;
 import utilities.Language;
 import utilities.Sound;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Objects;
 
 /**
