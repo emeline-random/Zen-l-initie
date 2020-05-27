@@ -97,3 +97,5 @@ demo8 = Nous allons choisir de jouer avec le niveau 2 et changeons donc le nivea
 demo9 = Maintenant que cela est fait lançons la partie !
 demo10 = Maintenant que nous avons joué, l'ordinateur va faire seul son déplacement :
 demo11 = On peut voir qu'il a bien déplacé son pion numéro 11. Vous êtes désormais prêt à jouer à Zen l'Initié et allez retourner au menu pour commencer votre propre partie (n'oubliez pas que vous pouvez à tout moment voir les règles du jeu, pour avoir plus d'aide lancer une partie puis cliquez sur ? -> Aide dans le menu)!
+sound on = Le son est maintenant activé !
+sound of = Le son est maintenant désactivé !

@@ -97,3 +97,5 @@ demo8 = We are going to choose to play with level 2 and therefore change the lev
 demo9 = Now that that's done, let's start the game!
 demo10 = Now that we've played, the computer will make its move alone:
 demo11 = You can see he's moved his number 11 pawn well. You are now ready to play Zen l'Initié and go back to the menu to start your own game (don't forget that you can see the rules of the game at any time, to get more help start a game then click on ? -> Help in the menu)!
+sound on = The sound is now turned on !
+sound of = The sound is now turned off !

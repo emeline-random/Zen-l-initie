@@ -158,6 +158,11 @@ public class InputUtilities {
                 Language.setLanguage(Language.Languages.ENGLISH);
                 System.out.println("language changed");
                 break;
+            case "sound":
+                Sound.setOn(!Sound.isOn());
+                if (Sound.isOn()) System.out.println(Language.getText("sound on"));
+                else System.out.println(Language.getText("sound of"));
+                break;
             case "q":
             case "Q":
             case "quit":
