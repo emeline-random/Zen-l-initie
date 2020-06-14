@@ -1,6 +1,7 @@
 package utilities;
 
 import javax.sound.sampled.*;
+import java.awt.*;
 import java.io.IOException;
 
 /**
@@ -8,8 +9,18 @@ import java.io.IOException;
  */
 public class Sound {
 
-    /**Indicates if the sound of the application is activated or not*/
+    /**
+     * Indicates if the sound of the application is activated or not
+     */
     private static boolean on = true;
+    /**
+     * The sound on image
+     */
+    private static final Image soundOn = ViewUtilities.getImage("/pictures/icons/soundOn.png");
+    /**
+     * The sound off image
+     */
+    private static final Image soundOff = ViewUtilities.getImage("/pictures/icons/soundOff.png");
 
     /**
      * The available sounds
@@ -24,9 +35,10 @@ public class Sound {
     /**
      * Allows to play a sound of the Sounds enumeration in a new Thread.
      * When the sound is over, the clip is close.
+     *
      * @param s one of the Sounds sound.
      */
-    public static void play(Sounds s){
+    public static void play(Sounds s) {
         if (Sound.isOn()) {
             new Thread(() -> {
                 try {
@@ -45,6 +57,11 @@ public class Sound {
         }
     }
 
+    public static Image getImage() {
+        if (on) return soundOn;
+        else return soundOff;
+    }
+
     /**
      * @return True if the sound is activated, false otherwise.
      */
@@ -54,6 +71,7 @@ public class Sound {
 
     /**
      * Allows to turn on and off the sound
+     *
      * @param isOn True if the sound should be on, false otherwise
      */
     public static void setOn(boolean isOn) {

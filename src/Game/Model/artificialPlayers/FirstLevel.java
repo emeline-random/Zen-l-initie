@@ -16,9 +16,6 @@ import java.io.Serializable;
  */
 public class FirstLevel extends ArtificialPlayer implements Serializable {
 
-    /** the array containing the coordinates of the move that will be done*/
-    private int[] coordinates;
-
     /**
      * Constructor of the class that initializes an artificial player of level 1
      * and that sets the artificialPlayer boolean to true in the superclass Player
@@ -44,7 +41,7 @@ public class FirstLevel extends ArtificialPlayer implements Serializable {
      * Allows to compute the move that will be done by the player. In this level,
      * the move done is a random move. This means that a pawn is chosen randomly
      * and then the direction where it goes is chosen randomly too. The displacement
-     * is tested and the operation is done until it is correct.Waits 1 second
+     * is computed and the operation is done until it is correct. Waits 1 second
      * before playing.
      * @param board   the board of Elements where the game is taking place
      * @param adverse the adverse of this player
@@ -53,20 +50,18 @@ public class FirstLevel extends ArtificialPlayer implements Serializable {
      */
     @Override
     public int[] play(Element[][] board, Player adverse, Game game) {
-        boolean hasMove = false;
-        coordinates = new int[3];
+        int[] coordinates = new int[]{-1, -1, -1};
         Pawn p;
         int i;
-        while (!hasMove) {
+        while (this.incorrectMove(coordinates, adverse, game)) {
             i = (int) (Math.random() * this.getPawns().size());
             p = this.getPawns().get(i);
             int j = 0;
-            while (!hasMove && j < 8){
-
+            do {
                 i = (int) (Math.random() * 8);
-                hasMove = aTest(i, board, adverse, game, p);
+                coordinates = getDisplacement(i, board, p);
                 j++;
-            }
+            } while (this.incorrectMove(coordinates, adverse, game) && j < 8);
         }
         try {
             Thread.sleep(1000);
@@ -79,64 +74,64 @@ public class FirstLevel extends ArtificialPlayer implements Serializable {
     /**
      * Allows to compute a test for a displacement. First creating the
      * array corresponding to the displacement (the direction is indicated
-     * by the i parameter that must be between 0 and 7). Then tests this
-     * displacement and returns true if it is correct. This method updates
-     * the coordinates instance variable.
+     * by the i parameter that must be between 0 and 7). Then returns the
+     * array giving the coordinates of the displacement.
      * @param i the index corresponding to the chosen direction
      * @param board the matrix of Elements corresponding to the board
-     * @param adverse the adverse of this player
-     * @param game the current game
      * @param p the pawn to move
-     * @return true is the move is correct, false otherwise
+     * @return the array of the coordinates of the displacement
      */
-    private boolean aTest(int i, Element[][] board, Player adverse, Game game, Pawn p){
+    private int[] getDisplacement(int i, Element[][] board, Pawn p){
         int nbPawns;
+        int[] coordinates = {-1, -1, -1};
         switch (i){
-            case 0:
+            case 0: //east
                 nbPawns = MatrixUtilities.countObjectColumn(board, p.getColumnIndex());
                 coordinates = new int[]{p.getNUMBER(), p.getLineIndex(), p.getColumnIndex() + nbPawns};
                 break;
-            case 1:
+            case 1: //west
                 nbPawns = MatrixUtilities.countObjectColumn(board, p.getColumnIndex());
                 coordinates = new int[]{p.getNUMBER(), p.getLineIndex(), p.getColumnIndex() - nbPawns};
                 break;
-            case 2:
+            case 2: //south
                 nbPawns = MatrixUtilities.countObjectLine(board, p.getLineIndex());
                 coordinates = new int[]{p.getNUMBER(), p.getLineIndex() + nbPawns, p.getColumnIndex()};
                 break;
-            case 3:
+            case 3: //north
                 nbPawns = MatrixUtilities.countObjectLine(board, p.getLineIndex());
                 coordinates = new int[]{p.getNUMBER(), p.getLineIndex() - nbPawns, p.getColumnIndex()};
                 break;
-            case 4:
+            case 4: //southwest
                 nbPawns = MatrixUtilities.countObjectDiagAsc(board, p.getLineIndex(), p.getColumnIndex());
-                coordinates = new int[]{p.getNUMBER(), p.getLineIndex() + nbPawns, p.getColumnIndex() + nbPawns};
+                coordinates = new int[]{p.getNUMBER(), p.getLineIndex() + nbPawns, p.getColumnIndex() - nbPawns};
                 break;
-            case 5:
+            case 5: //northeast
                 nbPawns = MatrixUtilities.countObjectDiagAsc(board, p.getLineIndex(), p.getColumnIndex());
-                coordinates = new int[]{p.getNUMBER(), p.getLineIndex() - nbPawns, p.getColumnIndex() - nbPawns};
+                coordinates = new int[]{p.getNUMBER(), p.getLineIndex() - nbPawns, p.getColumnIndex() + nbPawns};
                 break;
-            case 6:
+            case 6: //southeast
                 nbPawns = MatrixUtilities.countObjectDiagDesc(board, p.getLineIndex(), p.getColumnIndex());
                 coordinates = new int[]{p.getNUMBER(), p.getLineIndex() + nbPawns, p.getColumnIndex() + nbPawns};
                 break;
-            case 7:
+            case 7: //northwest
                 nbPawns = MatrixUtilities.countObjectDiagDesc(board, p.getLineIndex(), p.getColumnIndex());
                 coordinates = new int[]{p.getNUMBER(), p.getLineIndex() - nbPawns, p.getColumnIndex() - nbPawns};
                 break;
         }
-        return game.checkMove(this, coordinates, adverse);
+        return coordinates;
     }
 
     /**
-     * Allows to create a FirstLevel artificial player based on
-     * the color chosen by its adverse.
+     * Allows to create a FirstLevel artificial player based on the color chosen by its adverse.
+     * If its adverse chose the white color, then the player will have a random color, else
+     * it will have white color.
      * @param color the already chosen color
      * @return the new FirstLevel player.
      */
     @Override
-    public Player createPlayer(GameColor color) {
-        return new FirstLevel("ord", GameColor.getRandomColor(color));
+    public ArtificialPlayer createPlayer(GameColor color) {
+        if (color == GameColor.WHITE) return new FirstLevel("ord", GameColor.getRandomColor(color));
+        else return new FirstLevel("ord", GameColor.WHITE);
     }
 
     /**

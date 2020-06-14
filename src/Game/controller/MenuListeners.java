@@ -148,7 +148,7 @@ public class MenuListeners {
     public ActionListener rulesListener() {
         return (e) -> {
             Sound.play(Sound.Sounds.BUTTON_PRESSED);
-            GraphicMenu.showRules();
+            GraphicMenu.showRules(this.menu);
         };
     }
 
@@ -160,12 +160,13 @@ public class MenuListeners {
      */
     public ActionListener soundListener(JButton soundButton) {
         return (e) -> {
-            if (Sound.isOn()) Sound.setOn(false);
-            else {
+            if (Sound.isOn()) {
+                Sound.setOn(false);
+            } else {
                 Sound.setOn(true);
                 Sound.play(Sound.Sounds.BUTTON_PRESSED);
             }
-            soundButton.repaint();
+            soundButton.setIcon(null);
         };
     }
 

@@ -3,13 +3,15 @@ package game.controller;
 import game.model.ChineseSymbol;
 import game.model.Element;
 import game.model.Level;
-import game.view.GraphicMenu;
-import game.view.GraphicalInterface;
+import game.view.*;
 import utilities.Language;
 import utilities.Sound;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Java class that provides listeners to all of the menu items on the menu bar
@@ -17,53 +19,79 @@ import java.awt.event.ActionListener;
  */
 public class MenuBarListeners {
 
-    /**the interface that will be listened*/
+    /**
+     * the interface that will be listened
+     */
     private final GraphicalInterface graphicalInterface;
+    private final Game game;
+    private final Element[][] board;
+    private final ChineseSymbol[][] symbols;
+    private final Level level;
 
     /**
      * Constructor of the class that allows to initialize the interface
      * that this the listeners made on this class will be listening
+     *
      * @param graphicalInterface the interface containing the items to listen
+     * @param game               the current game
+     * @param board              the board of the game
+     * @param symbols            the symbols on the board
      */
-    public MenuBarListeners (GraphicalInterface graphicalInterface){
+    public MenuBarListeners(GraphicalInterface graphicalInterface, Game game, Element[][] board, ChineseSymbol[][] symbols, Level level) {
         this.graphicalInterface = graphicalInterface;
+        this.game = game;
+        this.board = board;
+        this.symbols = symbols;
+        this.level = level;
     }
 
     /**
      * Allows to create a listener for the game menu, it handles clicks that are made to save a game, to save it
      * to a special place and to restart it.
-     * @param save the save item
+     *
+     * @param save   the save item
      * @param saveAs the save as item
-     * @param restart the restart item
-     * @param game the game to save/save as/restart
      * @return the appropriate action listener
      */
-    public ActionListener gameListener(JMenuItem save, JMenuItem saveAs, JMenuItem restart, Game game){
+    public ActionListener gameListener(JButton save, JButton saveAs) {
         return e -> {
-            if (e.getSource() == save){
-                game.saveGame();
-            } else if (e.getSource() == saveAs){
-                game.saveGameAs();
-            } else if (e.getSource() == restart){
-                this.graphicalInterface.setVisible(false);
-                this.graphicalInterface.setRestartGame(true);
-                synchronized (this.graphicalInterface.getCoordinates()) {
-                    this.graphicalInterface.getCoordinates().notify();
-                }
+            if (e.getSource() == save) {
+                this.game.saveGame();
+            } else if (e.getSource() == saveAs) {
+                this.game.saveGameAs();
             }
         };
     }
 
-    /**
-     * Allows to create a listener that will handle actions on the menu menu, it
-     * allows to show the menu or to exit the application
-     * @param quit the quit item
-     * @param showMenu the show menu item
-     * @return the appropriate listener
-     */
-    public ActionListener menuListener(JMenuItem quit, JMenuItem showMenu){
+    public ActionListener settingsListener2(JComponent language, JComponent scheme, JComponent sound, PopupFrame frame) {
         return e -> {
-            if (e.getSource() == showMenu){
+            if (e.getSource() == language) {
+                frame.getContentPane().removeAll();
+                frame.add(this.graphicalInterface.getLanguagePanel(frame));
+                frame.revalidate();
+            } else if (e.getSource() == scheme) {
+                frame.getContentPane().removeAll();
+                frame.add(this.graphicalInterface.getSchemePanel(frame));
+                frame.revalidate();
+            } else if (e.getSource() == sound) {
+                Sound.setOn(!Sound.isOn());
+                Image image = Sound.getImage();
+                ((IconButton)sound).changeIcon(new ImageIcon(image));
+                if (Sound.isOn()) Sound.play(Sound.Sounds.BUTTON_PRESSED);
+            }
+        };
+    }
+
+    public ActionListener pauseListener(JComponent console, JComponent home, JComponent replay, JComponent exit) {
+        return e -> {
+            if (e.getSource() == console) {
+                this.graphicalInterface.setVisible(false);
+                this.graphicalInterface.dispose();
+                this.graphicalInterface.setConsole(true);
+                synchronized (this.graphicalInterface.getCoordinates()) {
+                    this.graphicalInterface.getCoordinates().notify();
+                }
+            } else if (e.getSource() == home) {
                 int menu = JOptionPane.showConfirmDialog(null, Language.getText("menu confirmation"),
                         "Menu", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
                 if (menu == JOptionPane.YES_OPTION) {
@@ -74,56 +102,64 @@ public class MenuBarListeners {
                         this.graphicalInterface.getCoordinates().notify();
                     }
                 }
-            } else if (e.getSource() == quit){
-                System.exit(0);
+            } else if (e.getSource() == replay) {
+                this.graphicalInterface.setVisible(false);
+                this.graphicalInterface.setRestartGame(true);
+                synchronized (this.graphicalInterface.getCoordinates()) {
+                    this.graphicalInterface.getCoordinates().notify();
+                }
+            } else if (e.getSource() == exit) {
+                if (JOptionPane.showConfirmDialog(null, Language.getText("menu confirmation"),
+                        "Menu", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
+                    System.exit(0);
+                }
             }
         };
     }
 
-    /**
-     * Allows to create an action listener that handles actions in the settings menu. It allows to
-     * call the appropriates methods to change the language or the scheme and to turn on/off the sound
-     * of the application
-     * @param english the english item
-     * @param french the french item
-     * @param sound the sound on/off item
-     * @param board the matrix of elements (used to redraw the frame in case of changing scheme/language)
-     * @param game the current game (used to redraw the frame in case of changing scheme/language)
-     * @param level the current level (used to redraw the frame in case of changing scheme/language)
-     * @param symbols the matrix of ChineseSymbols (used to redraw the frame in case of changing scheme/language)
-     * @return the appropriate listener
-     */
-    public ActionListener settingsListener(JMenuItem english, JMenuItem french, JMenuItem sound, Element[][] board,
-                                           Game game, Level level, ChineseSymbol[][] symbols){
+    public ActionListener languageListener(JComponent fr, JComponent en) {
         return e -> {
-            if (e.getSource() == english){
-                Language.setLanguage(Language.Languages.ENGLISH);
-                this.graphicalInterface.repaintFrame(game, board, level, symbols);
-            } else if (e.getSource() == french){
-                Language.setLanguage(Language.Languages.FRENCH);
-                this.graphicalInterface.repaintFrame(game, board, level, symbols);
-            } else if (e.getSource() == sound){
-                Sound.setOn(!Sound.isOn());
-                sound.repaint();
-            }
+            if (e.getSource() == fr) Language.setLanguage(Language.Languages.FRENCH);
+            else if (e.getSource() == en) Language.setLanguage(Language.Languages.ENGLISH);
+            this.graphicalInterface.repaintFrame(this.game, this.board, this.level, this.symbols);
         };
     }
 
     /**
      * Allows to create a listener that handles actions on the help menu, it allows to
      * call the methods to show the rules frame and the help frame depending on the menu item clicked.
+     *
      * @param rules the rules item
-     * @param help the help item
+     * @param help  the help item
      * @return the appropriate listener
      */
-    public ActionListener helpListener(JMenuItem rules, JMenuItem help){
+    public ActionListener helpListener(JComponent rules, JComponent help) {
         return e -> {
-            if (e.getSource() == rules){
-                GraphicMenu.showRules();
-            } else if (e.getSource() == help){
+            if (e.getSource() == rules) {
+                GraphicMenu.showRules(this.graphicalInterface);
+            } else if (e.getSource() == help) {
                 this.graphicalInterface.showHelpFrame();
             }
         };
+    }
+
+    public ActionListener schemesListener(SwitchScheme.Scheme scheme) {
+        return e -> {
+            SwitchScheme.switchScheme(scheme);
+            this.graphicalInterface.repaintFrame(this.game, this.board, this.level, this.symbols);
+        };
+    }
+
+    public ActionListener menusListener(JFrame frame, List<JComponent> components, String title) {
+        return e -> {
+            PopupFrame frame1 = new PopupFrame(frame, components);
+            frame1.setTitle(title);
+            frame1.showFrame();
+        };
+    }
+
+    public ActionListener menusListener(PopupFrame frame) {
+        return e -> frame.showFrame();
     }
 
 }

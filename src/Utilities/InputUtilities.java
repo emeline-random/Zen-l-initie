@@ -185,9 +185,24 @@ public class InputUtilities {
                 try {
                     game.saveGame();
                     System.out.println(Language.getText("game saved"));
-                } catch (Exception e) {
+                } catch (NullPointerException e) {
                     System.out.println(Language.getText("save error"));
                 }
+                break;
+            case "graphic":
+                try {
+                    game.goToGraphic();
+                } catch (NullPointerException e){
+                    System.out.println(Language.getText("no game"));
+                }
+                break;
+            case "help":
+                String[] commands = Language.getText("commands").split("\\|");
+                System.out.println("-----------------------------------------------------");
+                for (String command : commands){
+                    System.out.println(command.trim());
+                }
+                System.out.println("-----------------------------------------------------");
         }
     }
 }

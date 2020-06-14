@@ -57,7 +57,7 @@ public class Game implements Serializable {
             this.mode = mode;
             this.firstPlayer = firstPlayer;
             if (secondPlayer instanceof ArtificialPlayer) {
-                this.secondPlayer = ((ArtificialPlayer) secondPlayer).createPlayer(firstPlayer.getCOLOR());
+                this.secondPlayer = ((ArtificialPlayer) secondPlayer).createPlayer(firstPlayer.getColor());
             } else {
                 this.secondPlayer = secondPlayer;
             }
@@ -96,6 +96,16 @@ public class Game implements Serializable {
         } else {
             this.mode = new Console(this.level);
         }
+        this.mode.restartGame(this, this.gameBoard.getBoard());
+    }
+
+    public void goToConsole(){
+        this.mode = new Console(this.level);
+        this.mode.restartGame(this, this.gameBoard.getBoard());
+    }
+
+    public void goToGraphic(){
+        this.mode = new Graphic(this.level);
         this.mode.restartGame(this, this.gameBoard.getBoard());
     }
 

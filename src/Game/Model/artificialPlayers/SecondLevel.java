@@ -293,25 +293,15 @@ public class SecondLevel extends ArtificialPlayer implements Serializable {
     }
 
     /**
-     * Allows to know if a displacement is correct or not.
-     * @param move the considerate displacement
-     * @param adverse the adverse of this player
-     * @param game the current game
-     * @return true if the move is incorrect, wrong otherwise.
-     */
-    private boolean incorrectMove(int[] move, Player adverse, Game game) {
-        return !game.checkMove(this, move, adverse);
-    }
-
-    /**
      * Allows to create a SecondLevel artificial player based on
      * the color chosen by its adverse.
      * @param color the already chosen color
      * @return the new FirstLevel player.
      */
     @Override
-    public Player createPlayer(GameColor color) {
-        return new SecondLevel("ord", GameColor.getRandomColor(color));
+    public ArtificialPlayer createPlayer(GameColor color) {
+        if (color == GameColor.WHITE) return new SecondLevel("ord", GameColor.getRandomColor(color));
+        else return new SecondLevel("ord", GameColor.WHITE);
     }
 
     /**

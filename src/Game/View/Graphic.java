@@ -50,8 +50,8 @@ public class Graphic implements GameMode {
     @Override
     public void setGame(Game game) {
         this.game = game;
-        Element.setPairColor(game.getFirstPlayer().getCOLOR());
-        Element.setImpairColor(game.getSecondPlayer().getCOLOR());
+        Element.setPairColor(game.getFirstPlayer().getColor());
+        Element.setImpairColor(game.getSecondPlayer().getColor());
     }
 
     /**
@@ -73,8 +73,8 @@ public class Graphic implements GameMode {
     @Override
     public void restartGame(Game game, Element[][] board) {
         this.game = game;
-        Element.setPairColor(game.getFirstPlayer().getCOLOR());
-        Element.setImpairColor(game.getSecondPlayer().getCOLOR());
+        Element.setPairColor(game.getFirstPlayer().getColor());
+        Element.setImpairColor(game.getSecondPlayer().getColor());
         this.anInterface = new GraphicalInterface(game, this.level, board, game.createSymbols());
         this.anInterface.setVisible(true);
         game.play();
@@ -92,7 +92,7 @@ public class Graphic implements GameMode {
     public void endGame(Player winner, Player looser, boolean equality) {
         if (!equality) {
             JOptionPane.showMessageDialog(null, Language.getText("congrats") + " " +
-                            winner.getNAME() + " " + Language.getText("win message"),
+                            winner.getName() + " " + Language.getText("win message"),
                     Language.getText("end game"), JOptionPane.INFORMATION_MESSAGE);
         } else {
             JOptionPane.showMessageDialog(null, Language.getText("equality"),
@@ -104,8 +104,8 @@ public class Graphic implements GameMode {
         if (end == JOptionPane.YES_OPTION) {
             this.game.replay();
         } else {
-            JOptionPane.showMessageDialog(null, winner.getNAME() + " " + Language.getText("has") + " "
-                            + winner.getPoints() + " points \n" + looser.getNAME() + " " + Language.getText("has") + " " + looser.getPoints() + "points",
+            JOptionPane.showMessageDialog(null, winner.getName() + " " + Language.getText("has") + " "
+                            + winner.getPoints() + " points \n" + looser.getName() + " " + Language.getText("has") + " " + looser.getPoints() + "points",
                     "End", JOptionPane.INFORMATION_MESSAGE);
             new GraphicMenu().showMenu();
         }
@@ -207,6 +207,8 @@ public class Graphic implements GameMode {
             new GraphicMenu().showMenu();
         } else if (this.anInterface.isRestartGame()) {
             this.game.replay();
+        } else if (this.anInterface.isConsole()) {
+            this.game.goToConsole();
         }
     }
 }

@@ -12,11 +12,11 @@ import java.util.ArrayList;
 public class Player implements Serializable {
 
     /**The name of the player*/
-    private final String NAME;
+    private final String name;
     /**The number of points of the player*/
     private int points;
     /**The color of the player*/
-    private final GameColor COLOR;
+    private final GameColor color;
     /**The number of pawns for all players*/
     private final static int PAWNS_NUMBER = 12;
     /**True if it's the player's turn to play.*/
@@ -34,8 +34,8 @@ public class Player implements Serializable {
      */
     public Player(String name, GameColor color) {
         if (name != null) {
-            this.COLOR = color;
-            this.NAME = name;
+            this.color = color;
+            this.name = name;
             resetPawns();
         } else {
             throw new IllegalArgumentException("Player initialization error");
@@ -50,7 +50,7 @@ public class Player implements Serializable {
     public void resetPawns() {
         this.pawns.clear();
         for(int i = 0; i < PAWNS_NUMBER; i++) {
-            this.pawns.add(new Pawn(this.COLOR, i));
+            this.pawns.add(new Pawn(this.color, i));
         }
     }
 
@@ -131,15 +131,15 @@ public class Player implements Serializable {
     /**
      * @return the color chosen by the player
      */
-    public GameColor getCOLOR() {
-        return this.COLOR;
+    public GameColor getColor() {
+        return this.color;
     }
 
     /**
      * @return the name of the player
      */
-    public String getNAME() {
-        return this.NAME;
+    public String getName() {
+        return this.name;
     }
 
     /**

@@ -1,21 +1,16 @@
 package game.view;
 
-import game.model.artificialPlayers.ArtificialPlayer;
-import game.model.Element;
-import game.model.artificialPlayers.FirstLevel;
-import game.model.artificialPlayers.SecondLevel;
 import game.controller.Game;
 import game.controller.MenuListeners;
-import utilities.GameColor;
-import utilities.Language;
-import utilities.RoundRectButton;
-import utilities.Sound;
+import game.model.Element;
+import game.model.artificialPlayers.ArtificialPlayer;
+import game.model.artificialPlayers.FirstLevel;
+import game.model.artificialPlayers.SecondLevel;
+import utilities.*;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
-import java.io.IOException;
+import java.util.Arrays;
 
 /**
  * Allows to display the menu of the game in graphic mode. To open the menu dialog
@@ -90,16 +85,12 @@ public class GraphicMenu extends JFrame {
         this.setSize(930, 535);
         this.setTitle("Zen l'Initié");
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        this.setIconImage((Toolkit.getDefaultToolkit().getImage(getClass().getResource("/pictures/logo.png"))));
+        this.setIconImage(ViewUtilities.getImage("/pictures/logo.png"));
         this.setContentPane(new JLabel() {
             @Override
             public void paintComponent(Graphics g) {
-                try {
-                    g.drawImage(ImageIO.read(getClass().getResource("/pictures/background.png")).getScaledInstance(GraphicMenu.this.getWidth(),
-                            GraphicMenu.this.getHeight(), Image.SCALE_DEFAULT), 0, 0, null);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                g.drawImage(ViewUtilities.getImage("/pictures/background.png", GraphicMenu.this.getWidth(),
+                        GraphicMenu.this.getHeight()), 0, 0, null);
             }
         });
         this.setLayout(new BorderLayout());
@@ -122,7 +113,9 @@ public class GraphicMenu extends JFrame {
         JLabel spaceLabel = new JLabel() {
             @Override
             public void paintComponent(Graphics g) {
-                this.setBorder(BorderFactory.createEmptyBorder(0, 0, (int) (GraphicMenu.this.getHeight() / 2.5), 0));
+                if (this.getBorder().getBorderInsets(this).bottom != (int) (GraphicMenu.this.getHeight() / 2.5)) {
+                    this.setBorder(BorderFactory.createEmptyBorder(0, 0, (int) (GraphicMenu.this.getHeight() / 2.5), 0));
+                }
             }
         };
         spaceLabel.setOpaque(false);
@@ -130,15 +123,11 @@ public class GraphicMenu extends JFrame {
         JButton home = new JButton() {
             @Override
             protected void paintComponent(Graphics g) {
-                try {
-                    this.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/pictures/home_logo.png"))
-                            .getScaledInstance(GraphicMenu.this.getWidth() / 18,
-                                    GraphicMenu.this.getHeight() / 11, Image.SCALE_DEFAULT)));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } finally {
-                    super.paintComponent(g);
+                if (this.getIcon() == null || this.getIcon().getIconWidth() != GraphicMenu.this.getWidth() / 18) {
+                    this.setIcon(ViewUtilities.getImageIcon("/pictures/icons/home_logo.png", GraphicMenu.this.getWidth() / 18,
+                            GraphicMenu.this.getHeight() / 11));
                 }
+                super.paintComponent(g);
             }
         };
         home.setBackground(new Color(26, 14, 5));
@@ -190,16 +179,13 @@ public class GraphicMenu extends JFrame {
      * @return the sound button
      */
     private JButton createSoundButton() {
-        JButton sound = new JButton(){
+        JButton sound = new JButton() {
             @Override
             public void paintComponent(Graphics graphics) {
-                Image i;
-                if (Sound.isOn())
-                    i = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/pictures/soundOn.png"));
-                else
-                    i = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/pictures/soundOff.png"));
-                this.setIcon(new ImageIcon(i.getScaledInstance(GraphicMenu.this.getWidth() / 18,
-                        GraphicMenu.this.getHeight() / 11, Image.SCALE_DEFAULT)));
+                if (this.getIcon() == null || this.getIcon().getIconWidth() != GraphicMenu.this.getWidth() / 18) {
+                    this.setIcon(ViewUtilities.getImageIcon(Sound.getImage(), GraphicMenu.this.getWidth() / 18,
+                            GraphicMenu.this.getHeight() / 11));
+                }
                 super.paintComponent(graphics);
             }
         };
@@ -213,34 +199,19 @@ public class GraphicMenu extends JFrame {
      * Allows to display in a new JFrame the rules of the game in the current language, the
      * frame can stay open while playing.
      */
-    public static void showRules() {
-        JFrame rulesFrame = new JFrame("Zen l'Initié - " + Language.getText("rules"));
-        addImageInRules(Toolkit.getDefaultToolkit().getImage(GraphicMenu.class.getResource("/pictures/logo.png")), rulesFrame, 200, 200);
+    public static void showRules(JFrame owner) {
+        JDialog rulesFrame = new JDialog(owner, true);
+        rulesFrame.add(new JLabel(ViewUtilities.getImageIcon("/pictures/logo.png", 200, 200)), BorderLayout.PAGE_START);
         JPanel panel = new JPanel(new GridLayout(3, 2));
-        addImageInRules(Toolkit.getDefaultToolkit().getImage(GraphicMenu.class.getResource("/pictures/help/players.png")), panel, 200, 120);
+        panel.add(new JLabel(ViewUtilities.getImageIcon("/pictures/help/players.png", 200, 120)));
         panel.add(new JLabel(Language.getText("goal")));
         panel.add(new JLabel(Language.getText("normal move")));
-        addImageInRules(Toolkit.getDefaultToolkit().getImage(GraphicMenu.class.getResource("/pictures/help/pawn.png")), panel, 160, 90);
-        addImageInRules(Toolkit.getDefaultToolkit().getImage(GraphicMenu.class.getResource("/pictures/help/zen.png")), panel, 160, 90);
+        panel.add(new JLabel(ViewUtilities.getImageIcon("/pictures/help/pawn.png", 160, 90)));
+        panel.add(new JLabel(ViewUtilities.getImageIcon("/pictures/help/zen.png", 160, 90)));
         panel.add(new JLabel(Language.getText("zen move")));
         rulesFrame.add(panel, BorderLayout.CENTER);
-        JLabel end = new JLabel("Zen l'Initié - Breit Hoarau Emeline");
-        rulesFrame.add(end, BorderLayout.PAGE_END);
-        rulesFrame.revalidate();
-        rulesFrame.setBounds(new Rectangle(800, 650));
-        rulesFrame.setLocationRelativeTo(null);
-        rulesFrame.setVisible(true);
-    }
-
-    /**
-     * Allows to add an image in the rules frame.
-     *
-     * @param container the container of the image
-     * @param width     the width of the image
-     * @param height    the height of the image
-     */
-    private static void addImageInRules(Image i, Container container, int width, int height) {
-        container.add(new JLabel(new ImageIcon(i.getScaledInstance(width, height, Image.SCALE_DEFAULT))), BorderLayout.PAGE_START);
+        rulesFrame.add(new JLabel("Zen l'Initié - Breit Hoarau Emeline"), BorderLayout.PAGE_END);
+        ViewUtilities.showDialog(rulesFrame, "Zen l'Initié - " + Language.getText("rules"), 800, 700);
     }
 
     /**
@@ -253,9 +224,7 @@ public class GraphicMenu extends JFrame {
         JButton onePlayer = new RoundRectButton("1 " + Language.getText("player"), 10, 5, this);
         JButton twoPlayers = new RoundRectButton("2 " + Language.getText("players"), 10, 5, this);
         JButton demo = new RoundRectButton("Demo", 10, 5, this);
-        ActionListener listener = this.listener.playerNumberListener(onePlayer, twoPlayers);
-        onePlayer.addActionListener(listener);
-        twoPlayers.addActionListener(listener);
+        ViewUtilities.addActionListener(this.listener.playerNumberListener(onePlayer, twoPlayers), Arrays.asList(onePlayer, twoPlayers));
         demo.addActionListener(this.listener.demoListener());
         this.centerPanel.add(onePlayer);
         this.centerPanel.add(twoPlayers);
@@ -291,29 +260,21 @@ public class GraphicMenu extends JFrame {
         player2.setHorizontalAlignment(SwingConstants.CENTER);
         JTextField name1 = new JTextField(Language.getText("name"));
         JTextField name2 = new JTextField(Language.getText("name"));
-
         DefaultComboBoxModel<GameColor> model1 = new DefaultComboBoxModel<>(GameColor.getColors());
         DefaultComboBoxModel<GameColor> model2 = new DefaultComboBoxModel<>(GameColor.getColors());
         JComboBox<GameColor> colors1 = new JComboBox<>(model1);
         JComboBox<GameColor> colors2 = new JComboBox<>(model2);
 
         JButton button = new RoundRectButton(Language.getText("start"), 10, 10, this);
-        button.addActionListener(this.listener.startButtonListener(name1, graphicBox, consoleBox, playerNumber, colors1, colors2, name2, level, playerJComboBox));
+        button.addActionListener(this.listener.startButtonListener(name1, graphicBox, consoleBox, playerNumber, colors1,
+                colors2, name2, level, playerJComboBox));
         if (playerNumber == 2) this.centerPanel.setLayout(new GridLayout(4, 3));
         else this.centerPanel.setLayout(new GridLayout(3, 3));
         this.centerPanel.setBackground(new Color(230, 216, 202));
         this.centerPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
-        this.centerPanel.add(mode);
-        this.centerPanel.add(graphicBox);
-        this.centerPanel.add(consoleBox);
-        this.centerPanel.add(player1);
-        this.centerPanel.add(name1);
-        this.centerPanel.add(colors1);
+        ViewUtilities.addAll(this.centerPanel, Arrays.asList(mode, graphicBox, consoleBox, player1, name1, colors1));
         if (playerNumber == 2) {
-            this.centerPanel.add(player2);
-            this.centerPanel.add(name2);
-            this.centerPanel.add(colors2);
-            this.centerPanel.add(new JLabel());
+            ViewUtilities.addAll(this.centerPanel, Arrays.asList(player2, name2, colors2, new JLabel()));
         } else {
             JLabel adverse = new JLabel(Language.getText("adverse level"));
             adverse.setHorizontalAlignment(SwingConstants.CENTER);
@@ -333,11 +294,9 @@ public class GraphicMenu extends JFrame {
      * @return the panel with JButtons that change the language
      */
     private JPanel createLanguagePanel() {
-        JButton fr = new JButton(new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/pictures/france.png"))));
-        JButton en = new JButton(new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/pictures/english.png"))));
-        ActionListener listener = this.listener.languageListener(fr, en);
-        fr.addActionListener(listener);
-        en.addActionListener(listener);
+        JButton fr = new JButton(ViewUtilities.getImageIcon("/pictures/icons/france.png", 30, 20));
+        JButton en = new JButton(ViewUtilities.getImageIcon("/pictures/icons/english.png", 30, 20));
+        ViewUtilities.addActionListener(this.listener.languageListener(fr, en), Arrays.asList(fr, en));
         JPanel languages = new JPanel() {
             @Override
             public void paintComponent(Graphics g) {
@@ -346,8 +305,6 @@ public class GraphicMenu extends JFrame {
                 super.paintComponent(g);
             }
         };
-        fr.setSize(30, 20);
-        en.setSize(30, 20);
         languages.setPreferredSize(new Dimension(50, 40));
         languages.add(en);
         languages.add(fr);

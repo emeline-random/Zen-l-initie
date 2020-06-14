@@ -3,7 +3,10 @@ package game.view;
 import com.formdev.flatlaf.FlatDarculaLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
+import java.awt.*;
+import java.io.IOException;
 
 /**
  * Java class that allows to change the scheme of the application in graphic view by setting
@@ -20,7 +23,7 @@ public class SwitchScheme {
         LIGHT,
         DARK,
         NIMBUS,
-        SYSTEM,
+        SYSTEM
     }
 
     /**
@@ -69,4 +72,9 @@ public class SwitchScheme {
     public static Scheme getCurrentScheme() {
         return SwitchScheme.currentScheme;
     }
+
+    public static boolean isDark(){
+        return currentScheme == Scheme.DARK;
+    }
+
 }

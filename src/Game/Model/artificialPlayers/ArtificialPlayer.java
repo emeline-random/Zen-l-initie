@@ -41,6 +41,17 @@ public abstract class ArtificialPlayer extends Player {
      * @param color the already chosen color
      * @return a new ArtificialPlayer ready to play
      */
-    public abstract Player createPlayer(GameColor color);
+    public abstract ArtificialPlayer createPlayer(GameColor color);
+
+    /**
+     * Allows to know if a displacement is correct or not.
+     * @param move the considerate displacement
+     * @param adverse the adverse of this player
+     * @param game the current game
+     * @return true if the move is incorrect, wrong otherwise.
+     */
+    protected boolean incorrectMove(int[] move, Player adverse, Game game){
+        return !game.checkMove(this, move, adverse);
+    }
 
 }

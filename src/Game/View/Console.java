@@ -72,13 +72,13 @@ public class Console implements GameMode {
         if (equality) {
             System.out.println(Language.getText("equality"));
         } else {
-            System.out.println(Language.getText("congrats") + winner.getNAME() + ", " + Language.getText("win message"));
+            System.out.println(Language.getText("congrats") + winner.getName() + ", " + Language.getText("win message"));
         }
         if (InputUtilities.getConfirmation(Language.getText("new game"))) {
             this.game.replay();
         } else {
-            System.out.println(winner.getNAME() + " " + Language.getText("has") + " " + winner.getPoints() + " point(s)");
-            System.out.println(looser.getNAME() + " " + Language.getText("has") + " " + looser.getPoints() + " point(s)");
+            System.out.println(winner.getName() + " " + Language.getText("has") + " " + winner.getPoints() + " point(s)");
+            System.out.println(looser.getName() + " " + Language.getText("has") + " " + looser.getPoints() + " point(s)");
             ConsoleMenu.showMenu();
         }
     }
@@ -111,7 +111,7 @@ public class Console implements GameMode {
             if (p.getNUMBER() != -1) choices.append("|^").append(p.getNUMBER()).append("$");
             else choices.append("|^z$");
         }
-        String input = InputUtilities.getInputRegex(player.getNAME() + ", " + Language.getText("pawn question"), new String(choices),
+        String input = InputUtilities.getInputRegex(player.getName() + ", " + Language.getText("pawn question"), new String(choices),
                 Language.getText("pawn error"), this.game);
         if (input.equals("z")) input = "-1";
         coordinates[0] = Integer.parseInt(input);

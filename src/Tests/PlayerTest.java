@@ -114,19 +114,19 @@ public class PlayerTest {
      */
     @Test
     public void getCOLOR() {
-        assertEquals(GameColor.RED, this.player.getCOLOR());
+        assertEquals(GameColor.RED, this.player.getColor());
         Player p = new Player("name", GameColor.BLUE);
-        assertEquals(GameColor.BLUE, p.getCOLOR());
+        assertEquals(GameColor.BLUE, p.getColor());
     }
 
     /**
-     * Allows to check briefly the getNAME() method
+     * Allows to check briefly the getName() method
      */
     @Test
     public void getNAME() {
-        assertEquals("Name", this.player.getNAME());
+        assertEquals("Name", this.player.getName());
         Player p = new Player("Jean", GameColor.BLUE);
-        assertEquals("Jean", p.getNAME());
+        assertEquals("Jean", p.getName());
     }
 
     /**
