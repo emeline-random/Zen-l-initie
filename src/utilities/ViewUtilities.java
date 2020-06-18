@@ -86,14 +86,17 @@ public class ViewUtilities {
      * @param iconName the path of the icon from the directories defined higher (often simply imageName.png)
      * @return the version of the icon in the current scheme
      */
-    public static ImageIcon getSchemeIcon(String iconName) {
+    public static ImageIcon getSchemeIcon(String iconName, boolean manageSize) {//TODO javadoc update
         Image image;
         if (Scheme.isDark()) image = getImage("/pictures/icons/dark/" + iconName);
         else image = getImage("/pictures/icons/light/" + iconName);
         if (image == null) image = getImage("/pictures/icons/" + iconName);
         assert image != null;
-        int width = PopupFrame.getComponentsHeight() * image.getWidth(null) / image.getHeight(null);
-        return getIcon(new ImageIcon(image), width, PopupFrame.getComponentsHeight());
+        if (manageSize){
+            int width = PopupFrame.getComponentsHeight() * image.getWidth(null) / image.getHeight(null);
+            return getIcon(new ImageIcon(image), width, PopupFrame.getComponentsHeight());
+        }
+        return new ImageIcon(image);//getIcon(new ImageIcon(image), width, PopupFrame.getComponentsHeight());
     }
 
     /**

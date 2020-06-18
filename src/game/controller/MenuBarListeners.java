@@ -95,7 +95,7 @@ public class MenuBarListeners {
                 frame.pack();
             } else if (e.getSource() == sound) {
                 Sound.setOn(!Sound.isOn());
-                ((IconButton) sound).changeIcon(Sound.getImage(false));
+                ((IconButton) sound).changeIcon(Sound.getImage(false), false, null);
                 if (Sound.isOn()) Sound.play(Sound.Sounds.BUTTON_PRESSED);
             }
         };

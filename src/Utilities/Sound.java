@@ -2,7 +2,6 @@ package utilities;
 
 import javax.sound.sampled.*;
 import javax.swing.*;
-import javax.xml.crypto.Data;
 import java.io.IOException;
 
 /**
@@ -53,11 +52,11 @@ public class Sound {
 
     public static ImageIcon getImage(boolean lightIconOnly) {
         if (lightIconOnly){
-            if (on) return ViewUtilities.getSchemeIcon("soundOn.png");
-            else return ViewUtilities.getSchemeIcon("soundOff.png");
+            if (on) return ViewUtilities.getSchemeIcon("soundOn.png", true);
+            else return ViewUtilities.getSchemeIcon("soundOff.png", true);
         }else {
-            if (on) return ViewUtilities.getSchemeIcon("soundOn2.png");
-            else return ViewUtilities.getSchemeIcon("soundOff2.png");
+            if (on) return ViewUtilities.getSchemeIcon("soundOn2.png", true);
+            else return ViewUtilities.getSchemeIcon("soundOff2.png", true);
         }
     }
 

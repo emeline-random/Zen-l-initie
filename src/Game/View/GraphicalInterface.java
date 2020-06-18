@@ -299,10 +299,19 @@ public class GraphicalInterface extends JFrame {
             ActionListener action = this.boardListeners.easyModeListener(board);
             String[] jButtons = {"nw", "n", "ne", "w", "e", "sw", "s", "se"};
             for (int i = 0; i < jButtons.length; i++) {
-                JButton button = new JButton(ViewUtilities.getIcon(ViewUtilities.getSchemeIcon("arrows/" + jButtons[i] + ".png"),
+                String icon = "arrows/" + jButtons[i] + ".png";
+                JButton button = new JButton(ViewUtilities.getIcon(ViewUtilities.getSchemeIcon(icon, false),
                         Element.getSizeUnity(), Element.getSizeUnity()));
                 button.setName(jButtons[i]);
                 button.addActionListener(action);
+                button.addComponentListener(new ComponentAdapter() {
+                    @Override
+                    public void componentResized(ComponentEvent e) {
+                        button.setIcon(ViewUtilities.getIcon(ViewUtilities.getSchemeIcon(icon, false)
+                                , Element.getSizeUnity(), Element.getSizeUnity()));
+                        super.componentResized(e);
+                    }
+                });
                 if (i == 4) buttons.add(this.pawn);
                 buttons.add(button);
             }
@@ -410,8 +419,8 @@ public class GraphicalInterface extends JFrame {
      */
     private JPanel createOptionsPanel() {
         JPanel panel = new JPanel(new GridLayout(5, 1));
-        JButton save = new IconButton(ViewUtilities.getSchemeIcon("save.png"), true);
-        JButton saveAs = new IconButton(ViewUtilities.getSchemeIcon("saveAs.png"), true);
+        JButton save = new IconButton(ViewUtilities.getSchemeIcon("save.png", true), true, "save.png", true);
+        JButton saveAs = new IconButton(ViewUtilities.getSchemeIcon("saveAs.png", true), true, "saveAs.png", true);
         ViewUtilities.addActionListener(this.listeners.saveListener(save, saveAs), save, saveAs);
         ViewUtilities.addAll(panel, this.createPauseMenu(), save, saveAs, this.createSettingsMenu(), this.createHelpMenu());
         return panel;
@@ -424,9 +433,9 @@ public class GraphicalInterface extends JFrame {
      * @return the help menu button
      */
     private JButton createHelpMenu() {
-        JButton button = new IconButton(ViewUtilities.getSchemeIcon("question.png"), true);
-        JButton help = new IconButton(this.getIcon("/pictures/icons/help.png"), false);
-        JButton rules = new IconButton(this.getIcon("/pictures/icons/rules.png"), false);
+        JButton button = new IconButton(ViewUtilities.getSchemeIcon("question.png", true), true, "question.png", true);
+        JButton help = new IconButton(this.getIcon("/pictures/icons/help.png"), false, null, false);
+        JButton rules = new IconButton(this.getIcon("/pictures/icons/rules.png"), false, null, false);
         ViewUtilities.addActionListener(this.listeners.helpListener(rules, help), rules, help);
         button.addActionListener(this.listeners.menusListener(this, "Help", help, rules));
         MenuBarListeners.buttonClickedListener(button);
@@ -440,10 +449,10 @@ public class GraphicalInterface extends JFrame {
      * @return the settings menu button
      */
     private JButton createSettingsMenu() {
-        JButton button = new IconButton(ViewUtilities.getSchemeIcon("settings.png"), true);
-        JButton scheme = new IconButton(this.getIcon("/pictures/icons/scheme.png"), false);
-        JButton language = new IconButton(this.getIcon("/pictures/icons/language.png"), false);
-        JButton sound = new IconButton(Sound.getImage(false), false);
+        JButton button = new IconButton(ViewUtilities.getSchemeIcon("settings.png", true), true, "settings.png", true);
+        JButton scheme = new IconButton(this.getIcon("/pictures/icons/scheme.png"), false, null, false);
+        JButton language = new IconButton(this.getIcon("/pictures/icons/language.png"), false, null, false);
+        JButton sound = new IconButton(Sound.getImage(false), false, null, false);
         PopupFrame frame = new PopupFrame(this, scheme, language, sound);
         frame.setTitle("settings");
         ActionListener listener = this.listeners.settingsListener(language, scheme, sound, frame);
@@ -461,11 +470,11 @@ public class GraphicalInterface extends JFrame {
      * @return the pause menu button
      */
     private JButton createPauseMenu() {
-        JButton button = new IconButton(ViewUtilities.getSchemeIcon("pause.png"), true);
-        JButton console = new IconButton(this.getIcon("/pictures/icons/console.png"), false);
-        JButton home = new IconButton(ViewUtilities.getSchemeIcon("home_logo.png"), false);
-        JButton restart = new IconButton(this.getIcon("/pictures/icons/restart.png"), false);
-        JButton exit = new IconButton(this.getIcon("/pictures/icons/exit.png"), false);
+        JButton button = new IconButton(ViewUtilities.getSchemeIcon("pause.png", true), true, "pause.png", true);
+        JButton console = new IconButton(this.getIcon("/pictures/icons/console.png"), false, null, false);
+        JButton home = new IconButton(ViewUtilities.getSchemeIcon("home_logo.png", true), false, null, true);
+        JButton restart = new IconButton(this.getIcon("/pictures/icons/restart.png"), false, null, false);
+        JButton exit = new IconButton(this.getIcon("/pictures/icons/exit.png"), false, null, false);
         ViewUtilities.addActionListener(this.listeners.pauseListener(console, home, restart, exit), home, console, exit, restart);
         button.addActionListener(this.listeners.menusListener(this, "Pause", home, console, exit, restart));
         MenuBarListeners.buttonClickedListener(button);
@@ -482,8 +491,8 @@ public class GraphicalInterface extends JFrame {
      */
     public JPanel getLanguagePanel(PopupFrame frame) {
         JPanel panel = new JPanel(new GridLayout(1, 3));
-        JButton fr = new IconButton(this.getIcon("/pictures/icons/france2.png"), false);
-        JButton en = new IconButton(this.getIcon("/pictures/icons/england2.png"), false);
+        JButton fr = new IconButton(this.getIcon("/pictures/icons/france2.png"), false, null, false);
+        JButton en = new IconButton(this.getIcon("/pictures/icons/england2.png"), false, null, false);
         ViewUtilities.addActionListener(this.listeners.languageListener(fr, en), fr, en);
         ViewUtilities.addAll(panel, frame.getHomeButton(), fr, en);
         return panel;
@@ -499,9 +508,9 @@ public class GraphicalInterface extends JFrame {
      */
     public JPanel getSchemePanel(PopupFrame frame) {
         JPanel panel = new JPanel(new GridLayout(1, 3));
-        JButton light = new IconButton(this.getIcon("/pictures/icons/lightScheme.png"), false);
-        JButton dark = new IconButton(this.getIcon("/pictures/icons/darkScheme.png"), false);
-        JButton system = new IconButton(ViewUtilities.getSchemeIcon("system.png"), false);
+        JButton light = new IconButton(this.getIcon("/pictures/icons/lightScheme.png"), false, null, false);
+        JButton dark = new IconButton(this.getIcon("/pictures/icons/darkScheme.png"), false, null, false);
+        JButton system = new IconButton(ViewUtilities.getSchemeIcon("system.png", true), false, null, true);
         light.addActionListener(this.listeners.schemesListener(Scheme.Schemes.LIGHT, light));
         dark.addActionListener(this.listeners.schemesListener(Scheme.Schemes.DARK, dark));
         system.addActionListener(this.listeners.schemesListener(Scheme.Schemes.SYSTEM, system));
