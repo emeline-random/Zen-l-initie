@@ -27,9 +27,14 @@ public class ConsoleMenu {
      * Then do the appropriate action.
      */
     public static void showMenu() {
-        System.out.println("*****************************");
-        System.out.println("* " + Language.getText("welcome") + " *");
-        System.out.println("*****************************\n");
+        System.out.println(
+                "\n" +
+                        " ______               _  _  _         _  _    _                 ___  ___                    \n" +
+                        "|___  /              | |( )(_)       (_)| |  (_)                |  \\/  |                    \n" +
+                        "   / /   ___  _ __   | ||/  _  _ __   _ | |_  _   ___   ______  | .  . |  ___  _ __   _   _ \n" +
+                        "  / /   / _ \\| '_ \\  | |   | || '_ \\ | || __|| | / _ \\ |______| | |\\/| | / _ \\| '_ \\ | | | |\n" +
+                        "./ /___|  __/| | | | | |   | || | | || || |_ | ||  __/          | |  | ||  __/| | | || |_| |\n" +
+                        "\\_____/ \\___||_| |_| |_|   |_||_| |_||_| \\__||_| \\___|          \\_|  |_/ \\___||_| |_| \\__,_|\n");
         System.out.println(Language.getText("change language") + "\n" + Language.getText("quit message") + "\n"
                 + Language.getText("replay message") + "\n" + Language.getText("menu message") + " \n");
         System.out.println(Language.getText("choose number") + "\n1 - " + Language.getText("new") + " \n2 - "
