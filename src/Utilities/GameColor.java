@@ -38,14 +38,13 @@ public class GameColor extends Color {
     /**
      * Constructor of the class, initializes the object with the given values and creating the
      * awt Color object with the given rgb values.
-     *
-     * @param r    red coefficient
+     *  @param r    red coefficient
      * @param g    green coefficient
      * @param b    blue coefficient
      * @param code the ansi escape code linked to the color
      * @param name the name of the color
      */
-    public GameColor(int r, int g, int b, String code, String name) {
+    private GameColor(int r, int g, int b, String code, String name) {
         super(r, g, b);
         if (code != null && name != null) {
             this.ANSI_CODE = code;

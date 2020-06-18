@@ -113,9 +113,9 @@ public class MenuListeners {
         return (e) -> {
             Sound.play(Sound.Sounds.BUTTON_PRESSED);
             this.menu.getContentPane().removeAll();
-            SwitchScheme.Scheme oldScheme = SwitchScheme.getCurrentScheme();
+            Scheme.Schemes oldScheme = Scheme.getCurrentScheme();
             try {
-                SwitchScheme.switchScheme(SwitchScheme.Scheme.SYSTEM);
+                Scheme.switchScheme(Scheme.Schemes.SYSTEM);
                 JFileChooser chooser = new JFileChooser(".");
                 FileNameExtensionFilter filter = new FileNameExtensionFilter(
                         "ser files", "ser");
@@ -132,7 +132,7 @@ public class MenuListeners {
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(null, Language.getText("save game error"), "Zen l'Initié", JOptionPane.ERROR_MESSAGE);
             } finally {
-                SwitchScheme.switchScheme(oldScheme);
+                Scheme.switchScheme(oldScheme);
                 synchronized (this.menu.getLock()) {
                     this.menu.getLock().notify();
                 }

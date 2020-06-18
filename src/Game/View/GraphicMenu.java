@@ -10,7 +10,6 @@ import utilities.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Arrays;
 
 /**
  * Allows to display the menu of the game in graphic mode. To open the menu dialog
@@ -80,9 +79,9 @@ public class GraphicMenu extends JFrame {
      * Allows to configure the frame and to create the panels that will be into it.
      */
     protected void configFrame() {
-        SwitchScheme.switchScheme(SwitchScheme.Scheme.LIGHT);
+        Scheme.switchScheme(Scheme.Schemes.LIGHT);
         this.listener = new MenuListeners(this);
-        this.setSize(930, 535);
+        this.setMinimumSize(new Dimension(800, 460));
         this.setTitle("Zen l'Initié");
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.setIconImage(ViewUtilities.getImage("/pictures/logo.png"));
@@ -124,13 +123,13 @@ public class GraphicMenu extends JFrame {
             @Override
             protected void paintComponent(Graphics g) {
                 if (this.getIcon() == null || this.getIcon().getIconWidth() != GraphicMenu.this.getWidth() / 18) {
-                    this.setIcon(ViewUtilities.getImageIcon("/pictures/icons/home_logo.png", GraphicMenu.this.getWidth() / 18,
+                    this.setIcon(ViewUtilities.getIcon("/pictures/icons/home_logo.png", GraphicMenu.this.getWidth() / 18,
                             GraphicMenu.this.getHeight() / 11));
                 }
                 super.paintComponent(g);
             }
         };
-        home.setBackground(new Color(26, 14, 5));
+        home.setBackground(Scheme.DARK_COLOR);
         home.addActionListener(this.listener.homeListener());
         home.setFocusable(false);
         GridBagConstraints constraints = new GridBagConstraints();
@@ -183,14 +182,14 @@ public class GraphicMenu extends JFrame {
             @Override
             public void paintComponent(Graphics graphics) {
                 if (this.getIcon() == null || this.getIcon().getIconWidth() != GraphicMenu.this.getWidth() / 18) {
-                    this.setIcon(ViewUtilities.getImageIcon(Sound.getImage(), GraphicMenu.this.getWidth() / 18,
+                    this.setIcon(ViewUtilities.getIcon(Sound.getImage(true), GraphicMenu.this.getWidth() / 18,
                             GraphicMenu.this.getHeight() / 11));
                 }
                 super.paintComponent(graphics);
             }
         };
         sound.addActionListener(this.listener.soundListener(sound));
-        sound.setBackground(new Color(26, 14, 5));
+        sound.setBackground(Scheme.DARK_COLOR);
         sound.setFocusable(false);
         return sound;
     }
@@ -201,14 +200,12 @@ public class GraphicMenu extends JFrame {
      */
     public static void showRules(JFrame owner) {
         JDialog rulesFrame = new JDialog(owner, true);
-        rulesFrame.add(new JLabel(ViewUtilities.getImageIcon("/pictures/logo.png", 200, 200)), BorderLayout.PAGE_START);
+        rulesFrame.add(new JLabel(ViewUtilities.getIcon("/pictures/logo.png", 200, 200)), BorderLayout.PAGE_START);
         JPanel panel = new JPanel(new GridLayout(3, 2));
-        panel.add(new JLabel(ViewUtilities.getImageIcon("/pictures/help/players.png", 200, 120)));
-        panel.add(new JLabel(Language.getText("goal")));
-        panel.add(new JLabel(Language.getText("normal move")));
-        panel.add(new JLabel(ViewUtilities.getImageIcon("/pictures/help/pawn.png", 160, 90)));
-        panel.add(new JLabel(ViewUtilities.getImageIcon("/pictures/help/zen.png", 160, 90)));
-        panel.add(new JLabel(Language.getText("zen move")));
+        ViewUtilities.addAll(panel, new JLabel(ViewUtilities.getIcon("/pictures/help/players.png", 200, 120)),
+                new JLabel(Language.getText("goal")), new JLabel(Language.getText("normal move")), new JLabel(
+                        ViewUtilities.getIcon("/pictures/help/pawn.png", 160, 90)), new JLabel(ViewUtilities.getIcon(
+                        "/pictures/help/zen.png", 160, 90)), new JLabel(Language.getText("zen move")));
         rulesFrame.add(panel, BorderLayout.CENTER);
         rulesFrame.add(new JLabel("Zen l'Initié - Breit Hoarau Emeline"), BorderLayout.PAGE_END);
         ViewUtilities.showDialog(rulesFrame, "Zen l'Initié - " + Language.getText("rules"), 800, 700);
@@ -224,7 +221,7 @@ public class GraphicMenu extends JFrame {
         JButton onePlayer = new RoundRectButton("1 " + Language.getText("player"), 10, 5, this);
         JButton twoPlayers = new RoundRectButton("2 " + Language.getText("players"), 10, 5, this);
         JButton demo = new RoundRectButton("Demo", 10, 5, this);
-        ViewUtilities.addActionListener(this.listener.playerNumberListener(onePlayer, twoPlayers), Arrays.asList(onePlayer, twoPlayers));
+        ViewUtilities.addActionListener(this.listener.playerNumberListener(onePlayer, twoPlayers), onePlayer, twoPlayers);
         demo.addActionListener(this.listener.demoListener());
         this.centerPanel.add(onePlayer);
         this.centerPanel.add(twoPlayers);
@@ -270,11 +267,11 @@ public class GraphicMenu extends JFrame {
                 colors2, name2, level, playerJComboBox));
         if (playerNumber == 2) this.centerPanel.setLayout(new GridLayout(4, 3));
         else this.centerPanel.setLayout(new GridLayout(3, 3));
-        this.centerPanel.setBackground(new Color(230, 216, 202));
+        this.centerPanel.setBackground(Scheme.LIGHT_COLOR);
         this.centerPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
-        ViewUtilities.addAll(this.centerPanel, Arrays.asList(mode, graphicBox, consoleBox, player1, name1, colors1));
+        ViewUtilities.addAll(this.centerPanel, mode, graphicBox, consoleBox, player1, name1, colors1);
         if (playerNumber == 2) {
-            ViewUtilities.addAll(this.centerPanel, Arrays.asList(player2, name2, colors2, new JLabel()));
+            ViewUtilities.addAll(this.centerPanel, player2, name2, colors2, new JLabel());
         } else {
             JLabel adverse = new JLabel(Language.getText("adverse level"));
             adverse.setHorizontalAlignment(SwingConstants.CENTER);
@@ -294,13 +291,13 @@ public class GraphicMenu extends JFrame {
      * @return the panel with JButtons that change the language
      */
     private JPanel createLanguagePanel() {
-        JButton fr = new JButton(ViewUtilities.getImageIcon("/pictures/icons/france.png", 30, 20));
-        JButton en = new JButton(ViewUtilities.getImageIcon("/pictures/icons/english.png", 30, 20));
-        ViewUtilities.addActionListener(this.listener.languageListener(fr, en), Arrays.asList(fr, en));
+        JButton fr = new JButton(ViewUtilities.getIcon("/pictures/icons/france.png", 30, 20));
+        JButton en = new JButton(ViewUtilities.getIcon("/pictures/icons/england.png", 30, 20));
+        ViewUtilities.addActionListener(this.listener.languageListener(fr, en), fr, en);
         JPanel languages = new JPanel() {
             @Override
             public void paintComponent(Graphics g) {
-                g.setColor(new Color(26, 14, 5));
+                g.setColor(Scheme.DARK_COLOR);
                 g.fillRoundRect(0, 0, getSize().width - 1, getSize().height - 1, 10, 10);
                 super.paintComponent(g);
             }

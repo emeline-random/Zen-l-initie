@@ -66,7 +66,7 @@ public class Game implements Serializable {
             if (mode instanceof Graphic) {
                 ((Graphic) mode).setAnInterface(this.gameBoard.getBoard(), this.createSymbols());
             } else {
-                mode.movePawn(firstPlayer, null, this.gameBoard.getBoard());
+                mode.movePawn(null, null, this.gameBoard.getBoard());
             }
         } else {
             throw new IllegalArgumentException("Game initialization error");

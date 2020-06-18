@@ -16,8 +16,6 @@ import java.awt.event.ComponentEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -35,15 +33,15 @@ public class GraphicalInterface extends JFrame {
     /**
      * The JTextField that will contain the number of the pawn to move
      */
-    private final JTextField pawn;
+    private JTextField pawn;
     /**
      * The JLabel that will contain the name of the current player
      */
-    private final JLabel playerName;
+    private JLabel playerName;
     /**
      * The JLabel displaying informations as needed (such as impossible displecement)
      */
-    private final JLabel information;
+    private JLabel information;
     /**
      * The JPanel containing the history of the last moves
      */
@@ -88,12 +86,8 @@ public class GraphicalInterface extends JFrame {
      * @param symbols the symbols to display
      */
     public GraphicalInterface(Game game, Level level, Element[][] board, ChineseSymbol[][] symbols) {
-        SwitchScheme.switchScheme(SwitchScheme.Scheme.LIGHT);
+        Scheme.switchScheme(Scheme.Schemes.LIGHT);
         if (game != null && level != null) {
-            this.pawn = new JTextField(3);
-            this.pawn.setHorizontalAlignment(JTextField.CENTER);
-            this.playerName = new JLabel(Language.getText("name"));
-            this.information = new JLabel();
             this.coordinates = new int[3];
             this.listeners = new MenuBarListeners(this, game, board, symbols, level);
             this.showFrame(game, board, level, symbols);
@@ -111,6 +105,10 @@ public class GraphicalInterface extends JFrame {
      * @param symbols the symbols to display
      */
     private void showFrame(Game game, Element[][] board, Level level, ChineseSymbol[][] symbols) {
+        this.pawn = new JTextField(3);
+        this.pawn.setHorizontalAlignment(JTextField.CENTER);
+        this.playerName = new JLabel(Language.getText("name"));
+        this.information = new JLabel();
         this.setIconImage(ViewUtilities.getImage("/pictures/logo.png"));
         this.configFrame();
         JTextField line = new JTextField(3);
@@ -119,6 +117,7 @@ public class GraphicalInterface extends JFrame {
         JPanel inputPanel = this.createInputPanel(board, level, line, column);
         JPanel infoPanel = this.createPlayersInfoPanel(game);
         this.historyPanel = new JPanel();
+        this.historyPanel.setBackground(Scheme.getSchemeBackground());
         this.historyPanel.setLayout(new BoxLayout(historyPanel, BoxLayout.Y_AXIS));
         this.historyPanel.add(new JLabel(Language.getText("history")));
         JPanel menuPanel = this.createOptionsPanel();
@@ -147,6 +146,17 @@ public class GraphicalInterface extends JFrame {
         this.setLayout(new BorderLayout());
     }
 
+    /**
+     * Allows to get a SplitPane from two panels. The orientation of the pane needs to be defined such
+     * as the proportion of the location of the divider. A component listener is added to manage automatically
+     * the size of both panels of the pane.
+     *
+     * @param orientation the orientation for the split pane
+     * @param panel1      the first panel of the pane
+     * @param panel2      the second panel of the pane
+     * @param percentage  the location of the divider (proportion between 0 and 1)
+     * @return the split pane with the two panels
+     */
     private JSplitPane getSplitPane(int orientation, JComponent panel1, JComponent panel2, double percentage) {
         JSplitPane pane = new JSplitPane(orientation, panel1, panel2);
         pane.addComponentListener(new ComponentAdapter() {
@@ -211,7 +221,8 @@ public class GraphicalInterface extends JFrame {
                         0, 0, null);
                 int widthSpace = this.getWidth() - (GameBoard.getDIMENSION() + 1) * Element.getSizeUnity();
                 if (widthSpace > 200) {
-                    Image image = ViewUtilities.getImage("/pictures/bamboo.png");
+                    Image image = ViewUtilities.getImage("/pictures/buddha.png");
+                    assert image != null;
                     int width = (this.getHeight() - 10) * image.getWidth(null) / image.getHeight(null);
                     g.drawImage(ViewUtilities.getImage(image, width, this.getHeight() - 10), this.getWidth() - width,
                             0, null);
@@ -270,6 +281,7 @@ public class GraphicalInterface extends JFrame {
      */
     private JPanel createInputPanel(Element[][] board, Level level, JTextField line, JTextField column) {
         JPanel p = new JPanel();
+        p.setBackground(Scheme.getSchemeBackground());
         p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
         ViewUtilities.addCenteredComponent(p, this.playerName, true);
         if (level == Level.HARD) {
@@ -278,20 +290,19 @@ public class GraphicalInterface extends JFrame {
             column.setMaximumSize(new Dimension(100, 20));
             JButton validButton = new JButton("go");
             validButton.addActionListener(this.boardListeners.validButtonListener(line, column));
-            ViewUtilities.addAllCentered(p, Arrays.asList(new JLabel(Language.getText("pawn message")), this.pawn,
+            ViewUtilities.addAllCentered(p, true, new JLabel(Language.getText("pawn message")), this.pawn,
                     new JLabel(Language.getText("line message")), line, new JLabel(Language.getText("column message")),
-                    column, validButton), true);
+                    column, validButton);
         } else {
             JPanel buttons = new JPanel();
             buttons.setLayout(new GridLayout(3, 3));
             ActionListener action = this.boardListeners.easyModeListener(board);
             String[] jButtons = {"nw", "n", "ne", "w", "e", "sw", "s", "se"};
             for (int i = 0; i < jButtons.length; i++) {
-                JButton button = new JButton();
+                JButton button = new JButton(ViewUtilities.getIcon(ViewUtilities.getSchemeIcon("arrows/" + jButtons[i] + ".png"),
+                        Element.getSizeUnity(), Element.getSizeUnity()));
                 button.setName(jButtons[i]);
                 button.addActionListener(action);
-                button.setIcon(ViewUtilities.getImageIcon("/pictures/arrows/" + button.getName() + ".png",
-                        Element.getSizeUnity(), Element.getSizeUnity()));
                 if (i == 4) buttons.add(this.pawn);
                 buttons.add(button);
             }
@@ -322,22 +333,36 @@ public class GraphicalInterface extends JFrame {
      * @return the panel displaying information on players
      */
     private JPanel createPlayersInfoPanel(Game game) {
-        JPanel infoPanel = new JPanel();
+        JPanel infoPanel = new JPanel(new GridLayout(3, 1));
+        infoPanel.setBackground(Scheme.getSchemeBackground());
         infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
-        JLabel label = new JLabel(ViewUtilities.getImageIcon("/pictures/logo.png", 100, 100));
-        ViewUtilities.addAllCentered(infoPanel, Arrays.asList(this.getPlayerPanel(game.getFirstPlayer(), 1),
-                this.getPlayerPanel(game.getSecondPlayer(), 2), label), true);
+        JButton logo = new JButton() {
+            @Override
+            protected void paintComponent(Graphics graphics) {
+                if (this.getIcon() == null || infoPanel.getHeight() / 3 - 10 != this.getIcon().getIconHeight())
+                    this.setIcon(ViewUtilities.getIcon("/pictures/logo.png", infoPanel.getHeight() / 3 - 10,
+                            infoPanel.getHeight() / 3 - 10));
+                super.paintComponent(graphics);
+            }
+        };
+        logo.setBackground(Scheme.getSchemeBackground());
+        logo.addActionListener(this.listeners.backToMenuListener());
+        ViewUtilities.addAllCentered(infoPanel, true, this.getPlayerPanel(game.getFirstPlayer(), 1),
+                this.getPlayerPanel(game.getSecondPlayer(), 2), logo);
         return infoPanel;
     }
 
     /**
-     * Allows to draw the pawn of one player, used to create the panel
-     * with the players information
+     * Allows to get the panel containing the information about one player.
+     * The information used are its name and the color he chose. The number of
+     * the player is used to determine the correct icon of user.
      */
     private JPanel getPlayerPanel(Player player, int playerNumber) {
         JPanel playerPanel = new JPanel();
+        playerPanel.setBackground(Scheme.getSchemeBackground());
         playerPanel.setLayout(new BoxLayout(playerPanel, BoxLayout.X_AXIS));
         JPanel subPanel = new JPanel(new GridLayout(2, 1));
+        subPanel.setBackground(Scheme.getSchemeBackground());
         subPanel.setLayout(new BoxLayout(subPanel, BoxLayout.Y_AXIS));
         JLabel playerIcon = new JLabel(this.getIcon("/pictures/icons/user" + playerNumber + ".png"));
         JLabel playerPawn = new JLabel() {
@@ -349,14 +374,21 @@ public class GraphicalInterface extends JFrame {
             }
         };
         playerPawn.setIcon(getPawnIcon(player.getColor(), player.getName().substring(0, 1)));
-        ViewUtilities.addAll(playerPanel, Arrays.asList(Box.createHorizontalBox(), playerIcon, Box.createHorizontalGlue()));
-        ViewUtilities.addCenteredComponent(subPanel, new JLabel(player.getName()), false);
-        ViewUtilities.addCenteredComponent(subPanel, playerPawn, false);
+        ViewUtilities.addAll(playerPanel, Box.createHorizontalBox(), playerIcon, Box.createHorizontalGlue());
+        ViewUtilities.addAllCentered(subPanel, false, new JLabel(player.getName()), playerPawn);
         playerPanel.add(subPanel);
         playerPanel.add(Box.createHorizontalGlue());
         return playerPanel;
     }
 
+    /**
+     * Allows to get an ImageIcon object that contains a circle painted with a certain
+     * color and containing a letter. The letter is actually the first letter of the player name.
+     *
+     * @param color the color of the circle
+     * @param s     the string to draw in the circle
+     * @return the image containing a representation of a pawn
+     */
     private ImageIcon getPawnIcon(Color color, String s) {
         BufferedImage image = new BufferedImage((int) (Element.getSizeUnity() * 0.75 + 1), (int) (Element.getSizeUnity() * 0.75 + 1),
                 BufferedImage.TYPE_INT_ARGB);
@@ -370,75 +402,124 @@ public class GraphicalInterface extends JFrame {
         return new ImageIcon(image);
     }
 
+    /**
+     * Allows to create the panel containing the menu of the application with the
+     * main features of the game.
+     *
+     * @return the menu panel that is made of 5 buttons
+     */
     private JPanel createOptionsPanel() {
         JPanel panel = new JPanel(new GridLayout(5, 1));
         JButton save = new IconButton(ViewUtilities.getSchemeIcon("save.png"), true);
         JButton saveAs = new IconButton(ViewUtilities.getSchemeIcon("saveAs.png"), true);
-        ViewUtilities.addActionListener(this.listeners.gameListener(save, saveAs), Arrays.asList(save, saveAs));
-        ViewUtilities.addAll(panel, Arrays.asList(this.createPauseMenu(), save, saveAs, this.createSettingsMenu(),
-                this.createHelpMenu()));
+        ViewUtilities.addActionListener(this.listeners.saveListener(save, saveAs), save, saveAs);
+        ViewUtilities.addAll(panel, this.createPauseMenu(), save, saveAs, this.createSettingsMenu(), this.createHelpMenu());
         return panel;
     }
 
+    /**
+     * Allows to create the button that will correspond to the help menu. This button allows
+     * to access to two functions : see the rules and the help of the game.
+     *
+     * @return the help menu button
+     */
     private JButton createHelpMenu() {
         JButton button = new IconButton(ViewUtilities.getSchemeIcon("question.png"), true);
         JButton help = new IconButton(this.getIcon("/pictures/icons/help.png"), false);
         JButton rules = new IconButton(this.getIcon("/pictures/icons/rules.png"), false);
-        ViewUtilities.addActionListener(this.listeners.helpListener(rules, help), Arrays.asList(rules, help));
-        List<JComponent> menus = Arrays.asList(new JComponent[]{help, rules});
-        button.addActionListener(this.listeners.menusListener(this, menus, "Help"));
+        ViewUtilities.addActionListener(this.listeners.helpListener(rules, help), rules, help);
+        button.addActionListener(this.listeners.menusListener(this, "Help", help, rules));
+        MenuBarListeners.buttonClickedListener(button);
         return button;
     }
 
+    /**
+     * Allows to create the button that will correspond to the settings menu. This button allows
+     * to access to 3 functions : change scheme, change language and turn on and off the sound.
+     *
+     * @return the settings menu button
+     */
     private JButton createSettingsMenu() {
         JButton button = new IconButton(ViewUtilities.getSchemeIcon("settings.png"), true);
         JButton scheme = new IconButton(this.getIcon("/pictures/icons/scheme.png"), false);
         JButton language = new IconButton(this.getIcon("/pictures/icons/language.png"), false);
-        JButton sound = new IconButton(new ImageIcon(Sound.getImage()), false);
-        List<JComponent> components = Arrays.asList(scheme, language, sound);
-        PopupFrame frame = new PopupFrame(this, components);
+        JButton sound = new IconButton(Sound.getImage(false), false);
+        PopupFrame frame = new PopupFrame(this, scheme, language, sound);
         frame.setTitle("settings");
-        ActionListener listener = this.listeners.settingsListener2(language, scheme, sound, frame);
-        ViewUtilities.addActionListener(listener, Arrays.asList(scheme, language, sound));
+        ActionListener listener = this.listeners.settingsListener(language, scheme, sound, frame);
+        ViewUtilities.addActionListener(listener, scheme, language, sound);
         button.addActionListener(this.listeners.menusListener(frame));
+        MenuBarListeners.buttonClickedListener(button);
         return button;
     }
 
+    /**
+     * Allows to create the button that will correspond to the pause menu. This button allows
+     * to access to 4 functions : exit, getting to the menu, restart the current game, going in
+     * console mode
+     *
+     * @return the pause menu button
+     */
     private JButton createPauseMenu() {
         JButton button = new IconButton(ViewUtilities.getSchemeIcon("pause.png"), true);
         JButton console = new IconButton(this.getIcon("/pictures/icons/console.png"), false);
-        JButton home = new IconButton(this.getIcon("/pictures/icons/home_logo.png"), false);
+        JButton home = new IconButton(ViewUtilities.getSchemeIcon("home_logo.png"), false);
         JButton restart = new IconButton(this.getIcon("/pictures/icons/restart.png"), false);
         JButton exit = new IconButton(this.getIcon("/pictures/icons/exit.png"), false);
-        ViewUtilities.addActionListener(this.listeners.pauseListener(console, home, restart, exit),
-                Arrays.asList(home, console, exit, restart));
-        button.addActionListener(this.listeners.menusListener(this, Arrays.asList(home, console, exit, restart), "Pause"));
+        ViewUtilities.addActionListener(this.listeners.pauseListener(console, home, restart, exit), home, console, exit, restart);
+        button.addActionListener(this.listeners.menusListener(this, "Pause", home, console, exit, restart));
+        MenuBarListeners.buttonClickedListener(button);
         return button;
     }
 
+    /**
+     * Allows to create a little panel containing buttons to change the language of the application.
+     * This panel is made to be on the PopupFrame of a menu (as a submenu). So a button to go back to the main menu page
+     * is added.
+     *
+     * @param frame the PopupFrame in which this panel will be display
+     * @return the change language panel
+     */
     public JPanel getLanguagePanel(PopupFrame frame) {
         JPanel panel = new JPanel(new GridLayout(1, 3));
-        JButton fr = new IconButton(this.getIcon("/pictures/icons/france.png"), false);
-        JButton en = new IconButton(this.getIcon("/pictures/icons/english.png"), false);
-        ViewUtilities.addActionListener(this.listeners.languageListener(fr, en), Arrays.asList(fr, en));//TODO les drapeaux
-        ViewUtilities.addAll(panel, Arrays.asList(frame.getHomeButton(), fr, en));
+        JButton fr = new IconButton(this.getIcon("/pictures/icons/france2.png"), false);
+        JButton en = new IconButton(this.getIcon("/pictures/icons/england2.png"), false);
+        ViewUtilities.addActionListener(this.listeners.languageListener(fr, en), fr, en);
+        ViewUtilities.addAll(panel, frame.getHomeButton(), fr, en);
         return panel;
     }
 
+    /**
+     * Allows to create a little panel containing buttons to change the scheme ot the application.
+     * This panel is made to be on the PopupFrame of a menu (as a submenu). So a button to go back to the main menu page
+     * is added.
+     *
+     * @param frame the PopupFrame in which this panel will be display
+     * @return the change scheme panel
+     */
     public JPanel getSchemePanel(PopupFrame frame) {
         JPanel panel = new JPanel(new GridLayout(1, 3));
-        JButton light = new IconButton(this.getIcon("/pictures/icons/lightScheme.png"), false);//TODO des meilleures images?
-        JButton dark = new IconButton(this.getIcon("/pictures/icons/darkScheme.png"), false);//TODO ajouter le thème du système
-        light.addActionListener(this.listeners.schemesListener(SwitchScheme.Scheme.LIGHT));
-        dark.addActionListener(this.listeners.schemesListener(SwitchScheme.Scheme.DARK));
-        ViewUtilities.addAll(panel, Arrays.asList(frame.getHomeButton(), light, dark));
+        JButton light = new IconButton(this.getIcon("/pictures/icons/lightScheme.png"), false);
+        JButton dark = new IconButton(this.getIcon("/pictures/icons/darkScheme.png"), false);
+        JButton system = new IconButton(ViewUtilities.getSchemeIcon("system.png"), false);
+        light.addActionListener(this.listeners.schemesListener(Scheme.Schemes.LIGHT, light));
+        dark.addActionListener(this.listeners.schemesListener(Scheme.Schemes.DARK, dark));
+        system.addActionListener(this.listeners.schemesListener(Scheme.Schemes.SYSTEM, system));
+        ViewUtilities.addAll(panel, frame.getHomeButton(), light, dark, system);
         return panel;
     }
 
+    /**
+     * Allows to get an ImageIcon that will have the height defined in the PopupFrame class (the width is adapted).
+     *
+     * @param path the path of the image
+     * @return the resized image
+     */
     private ImageIcon getIcon(String path) {
         Image image = ViewUtilities.getImage(path);
+        assert image != null;
         int width = PopupFrame.getComponentsHeight() * image.getWidth(null) / image.getHeight(null);
-        return ViewUtilities.getImageIcon(image, width, PopupFrame.getComponentsHeight());
+        return new ImageIcon(ViewUtilities.getImage(image, width, PopupFrame.getComponentsHeight()));
     }
 
     /**
@@ -460,7 +541,7 @@ public class GraphicalInterface extends JFrame {
             e.printStackTrace();
         }
         frame.add(pane);
-        ViewUtilities.showDialog(frame, "Zen l'initié", 1000, 600);
+        ViewUtilities.showDialog(frame, "Zen l'initié", 1000, 650);
     }
 
     /**

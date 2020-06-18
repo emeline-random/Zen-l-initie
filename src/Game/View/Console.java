@@ -26,8 +26,9 @@ public class Console implements GameMode {
 
     /**
      * Allows to create a console view with a precised level.
-     * @throws IllegalArgumentException if the level is null
+     *
      * @param level the level that the game will be played in
+     * @throws IllegalArgumentException if the level is null
      */
     public Console(Level level) {
         if (level != null) {
@@ -39,6 +40,7 @@ public class Console implements GameMode {
 
     /**
      * Allows to set the current game
+     *
      * @param game the displayed game
      */
     @Override
@@ -49,7 +51,8 @@ public class Console implements GameMode {
     /**
      * Allows to restart a saved game, it performs the movePawn() method to
      * print the board and then calls game.play().
-     * @param game the current game
+     *
+     * @param game  the current game
      * @param board the board to display
      */
     @Override
@@ -63,8 +66,9 @@ public class Console implements GameMode {
      * Allows to print a message depending on who won and asks the players if they want to
      * replay this game. If the answer is true the replay() method of the game is called, otherwise
      * the console menu is displayed.
-     * @param winner the winner of the game
-     * @param looser the looser of the game
+     *
+     * @param winner   the winner of the game
+     * @param looser   the looser of the game
      * @param equality true if there's an equality, else otherwise
      */
     @Override
@@ -85,21 +89,25 @@ public class Console implements GameMode {
 
     /**
      * Allows to actualize the view of the board by printing it.
+     *
      * @param player the player who just played
-     * @param move the move done in format [pawn, line, column]
-     * @param board the board that will be display
+     * @param move   the move done in format [pawn, line, column]
+     * @param board  the board that will be display
      */
     @Override
     public void movePawn(Player player, int[] move, Element[][] board) {
-        MatrixUtilities.showMatrix(board);
+        if (this.game.getSecondPlayer().isArtificialPlayer()){
+            if (player == null || player.isArtificialPlayer()) showMatrix(board);
+        } else showMatrix(board);
     }
 
     /**
      * Allows to get the coordinates of a move. First the number of the pawn to move is asked to the user, then
      * when it is correct if the mode is easy the user has to indicate a direction, else he has to type the line
      * and the column index.
+     *
      * @param player the player that should play
-     * @param board the board of Element objects on which the game is taking place
+     * @param board  the board of Element objects on which the game is taking place
      * @return the coordinates of the move in the format [pawn, line, column].
      */
     @Override
@@ -183,6 +191,7 @@ public class Console implements GameMode {
 
     /**
      * Asks the user a path ending with .ser
+     *
      * @return the path
      */
     @Override
@@ -196,6 +205,42 @@ public class Console implements GameMode {
     @Override
     public void saveAsFailure() {
         System.out.println(Language.getText("save error"));
+    }
+
+    /**
+     * Allows to print a matrix of Element objects with indexing of rows and columns with numbers and letters.
+     * If the Element is a Pawn the color of the string representation of the pawn is the color of the pawn object.
+     *
+     * @param elements the matrix of elements to print
+     */
+    private static void showMatrix(Element[][] elements) {
+        if (elements != null) {
+            String charFormat = " %-4s ";
+            String s = "ABCDEFGHIJK";
+            System.out.format("  ");
+            for (int i = 0; i < elements[0].length; i++) System.out.format(charFormat, "  " + s.charAt(i));
+            String leftAlignFormat = "| %-3s ";
+            System.out.format("%n   +-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+");
+            int j = 0;
+            for (Element[] pawns1 : elements) {
+                if (j!=10)System.out.print("\n" + j + "  ");
+                else System.out.print("\n" + j + " ");
+                for (Element pawn : pawns1) {
+                    if (pawn instanceof Pawn) {
+                        if (((Pawn) pawn).getNUMBER() > 9)
+                            System.out.format(leftAlignFormat, ((Pawn) pawn).getANSIColor() + " " + pawn + "\u001B[0m");
+                        else
+                            System.out.format(leftAlignFormat, ((Pawn) pawn).getANSIColor() + " " + pawn + " \u001B[0m");
+                    } else System.out.format(leftAlignFormat, " ");
+                }
+                System.out.format(leftAlignFormat, j);
+                System.out.format("%n   +-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+");
+                j++;
+            }
+            System.out.format("%n   ");
+            for (int i = 0; i < elements[0].length; i++) System.out.format(charFormat, "  " + s.charAt(i));
+            System.out.println();
+        }
     }
 
 }

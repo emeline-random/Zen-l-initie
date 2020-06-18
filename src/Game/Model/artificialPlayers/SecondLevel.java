@@ -208,7 +208,7 @@ public class SecondLevel extends ArtificialPlayer implements Serializable {
             moves[1] = pawn.getLineIndex();
             if (columnDifference > 0) moves[2] = pawn.getColumnIndex() - columnNumber;
             else moves[2] = pawn.getColumnIndex() + columnNumber;
-        } else if (Math.abs(lineDifference) < Math.abs(columnDifference)) {
+        } else {
             moves[2] = pawn.getColumnIndex();
             if (lineDifference > 0) moves[1] = pawn.getLineIndex() - lineNumber;
             else moves[1] = pawn.getLineIndex() + lineNumber;

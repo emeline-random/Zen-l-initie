@@ -1,7 +1,8 @@
 package utilities;
 
 import javax.sound.sampled.*;
-import java.awt.*;
+import javax.swing.*;
+import javax.xml.crypto.Data;
 import java.io.IOException;
 
 /**
@@ -13,14 +14,6 @@ public class Sound {
      * Indicates if the sound of the application is activated or not
      */
     private static boolean on = true;
-    /**
-     * The sound on image
-     */
-    private static final Image soundOn = ViewUtilities.getImage("/pictures/icons/soundOn.png");
-    /**
-     * The sound off image
-     */
-    private static final Image soundOff = ViewUtilities.getImage("/pictures/icons/soundOff.png");
 
     /**
      * The available sounds
@@ -42,9 +35,10 @@ public class Sound {
         if (Sound.isOn()) {
             new Thread(() -> {
                 try {
-                    Clip clip = AudioSystem.getClip();
                     AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(Sound.class.getClassLoader().getResource
                             ("sounds/" + s.name().toLowerCase() + ".wav"));
+                    DataLine.Info info = new DataLine.Info(Clip.class, audioInputStream.getFormat());
+                    Clip clip = (Clip) AudioSystem.getLine(info);
                     clip.open(audioInputStream);
                     clip.start();
                     Thread.sleep(clip.getFrameLength());
@@ -57,9 +51,14 @@ public class Sound {
         }
     }
 
-    public static Image getImage() {
-        if (on) return soundOn;
-        else return soundOff;
+    public static ImageIcon getImage(boolean lightIconOnly) {
+        if (lightIconOnly){
+            if (on) return ViewUtilities.getSchemeIcon("soundOn.png");
+            else return ViewUtilities.getSchemeIcon("soundOff.png");
+        }else {
+            if (on) return ViewUtilities.getSchemeIcon("soundOn2.png");
+            else return ViewUtilities.getSchemeIcon("soundOff2.png");
+        }
     }
 
     /**

@@ -1,38 +1,13 @@
 package utilities;
 
-import game.model.Element;
 import game.model.Pawn;
 
 import java.util.ArrayList;
 
+/**
+ * Allows to perform basics operations on matrix
+ */
 public class MatrixUtilities {
-
-    /**
-     * Allows to print a matrix of Element objects with indexing of rows and columns with numbers and letters.
-     * If the Element is a Pawn the color of the string representation of the pawn is the color of the pawn object.
-     *
-     * @param elements the matrix of elements to print
-     */
-    public static void showMatrix(Element[][] elements) {
-        if (elements != null) {
-            String s = "ABCDEFGHIJK";
-            for (int i = 0; i < elements[0].length; i++) {
-                System.out.print("\t" + s.charAt(i));
-            }
-            int j = 0;
-            for (Element[] pawns1 : elements) {
-                System.out.println();
-                System.out.print(j + "\t");
-                for (Element pawn : pawns1) {
-                    if (pawn instanceof Pawn)
-                        System.out.print(((Pawn) pawn).getANSIColor() + pawn + "\t" + "\u001B[0m");
-                    else System.out.print("/ \t");
-                }
-                j++;
-            }
-            System.out.println();
-        }
-    }
 
     /**
      * Allows to know if a point is in a matrix or not. It simply checks if
@@ -168,8 +143,8 @@ public class MatrixUtilities {
      *
      * @param matrix the matrix to look in
      * @param column the column of the point
-     * @param line the line of the point
-     * @param list the list of potential neighbours
+     * @param line   the line of the point
+     * @param list   the list of potential neighbours
      * @return the list of actual neighbours (that is actually a part of the potential neighbours list or an empty list)
      */
     public static ArrayList<Pawn> getNeighbours(Object[][] matrix, int column, int line, ArrayList<Pawn> list) {
@@ -199,12 +174,13 @@ public class MatrixUtilities {
      * Allows to know if during a displacement a Pawn object will meet another Pawn. The considered matrix (where the pawns are)
      * is a matrix of Element objects. The adverse paws that is not supposed to meet the pawn are stocked in adversePawns ArrayList
      * and the coordinates of the displacement are given with the line and the column.
-     * @param matrix the matrix where the pawns are
+     *
+     * @param matrix       the matrix where the pawns are
      * @param adversePawns the list of adverse pawns
-     * @param lastLine the line where the pawn that is going to do a displacement is
-     * @param lastColumn the column where the pawn that is going to do a displacement is
-     * @param nextLine the line where the pawn will be after its displacement
-     * @param nextColumn the column where the pawn will be after its displacement
+     * @param lastLine     the line where the pawn that is going to do a displacement is
+     * @param lastColumn   the column where the pawn that is going to do a displacement is
+     * @param nextLine     the line where the pawn will be after its displacement
+     * @param nextColumn   the column where the pawn will be after its displacement
      * @return true if the pawn meets an adverse pawn, false otherwise
      */
     public static boolean meetAdverse(Object[][] matrix, ArrayList<Pawn> adversePawns, int lastLine, int lastColumn, int nextLine, int nextColumn) {
