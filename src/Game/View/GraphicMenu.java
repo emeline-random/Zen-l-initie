@@ -70,7 +70,7 @@ public class GraphicMenu extends JFrame {
             this.showMenu();
         }
         if (this.startGame) this.game.beginGame();
-        else if (this.restart) this.game.restartGame();
+        else if (this.restart) this.game.restartGame(true);
         else if (this.demo) new Demo().showDemo();
         else showMenu();
     }
@@ -197,6 +197,7 @@ public class GraphicMenu extends JFrame {
     /**
      * Allows to display in a new JFrame the rules of the game in the current language, the
      * frame can stay open while playing.
+     * @param owner the frame that will hold the PopupFrame of the rules
      */
     public static void showRules(JFrame owner) {
         JDialog rulesFrame = new JDialog(owner, true);

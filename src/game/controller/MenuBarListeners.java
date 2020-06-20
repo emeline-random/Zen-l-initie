@@ -20,9 +20,21 @@ public class MenuBarListeners {
      * the interface that will be listened
      */
     private final GraphicalInterface graphicalInterface;
+    /**
+     * The game that uses this listener
+     */
     private final Game game;
+    /**
+     * The array of elements representing the board (used in some methods)
+     */
     private final Element[][] board;
+    /**
+     * The array of symbols of the board (used in some methods)
+     */
     private final ChineseSymbol[][] symbols;
+    /**
+     * The level of the game (used in some methods)
+     */
     private final Level level;
 
     /**
@@ -33,6 +45,7 @@ public class MenuBarListeners {
      * @param game               the current game
      * @param board              the board of the game
      * @param symbols            the symbols on the board
+     * @param level              the Level of the game
      */
     public MenuBarListeners(GraphicalInterface graphicalInterface, Game game, Element[][] board, ChineseSymbol[][] symbols, Level level) {
         this.graphicalInterface = graphicalInterface;
@@ -106,9 +119,9 @@ public class MenuBarListeners {
      * go to the menu, to restart the current game or to exit the application
      *
      * @param console the console button
-     * @param home the home button
-     * @param replay the replay button
-     * @param exit the exit button
+     * @param home    the home button
+     * @param replay  the replay button
+     * @param exit    the exit button
      * @return the appropriate listener
      */
     public ActionListener pauseListener(JButton console, JButton home, JButton replay, JButton exit) {
@@ -140,6 +153,7 @@ public class MenuBarListeners {
 
     /**
      * Listener that simply allows to go back to the menu after a confirmation.
+     *
      * @return the listener that allows to go back to the menu
      */
     public ActionListener backToMenuListener() {
@@ -164,6 +178,7 @@ public class MenuBarListeners {
 
     /**
      * Allows to get a listener that can change the language of the application
+     *
      * @param fr the french button
      * @param en the english button
      * @return the listener that changes the language of the application
@@ -198,6 +213,7 @@ public class MenuBarListeners {
 
     /**
      * Allows to get a listener that can change the scheme of the application to the precised scheme
+     *
      * @param scheme the scheme to pass the application to
      * @param button the button of the scheme
      * @return the listener that changes the scheme of the application to the given scheme
@@ -212,8 +228,9 @@ public class MenuBarListeners {
 
     /**
      * Allows to create and to show a PopupFrame with some components and a title when a button is clicked
-     * @param frame the RootPane of the PopupFrame to create
-     * @param title the title of the frame
+     *
+     * @param frame      the RootPane of the PopupFrame to create
+     * @param title      the title of the frame
      * @param components the buttons that the PopupFrame will contain
      * @return the listener that allows to create and show the frame
      */
@@ -228,6 +245,7 @@ public class MenuBarListeners {
 
     /**
      * Allows to show a PopupFrame when a button is clicked
+     *
      * @param frame the frame to show
      * @return the listener that allows to create and show the frame
      */

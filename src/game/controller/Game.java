@@ -5,6 +5,7 @@ import game.model.artificialPlayers.ArtificialPlayer;
 import game.view.Console;
 import game.view.GameMode;
 import game.view.Graphic;
+import utilities.InputUtilities;
 import utilities.Language;
 import utilities.MatrixUtilities;
 import utilities.Sound;
@@ -22,23 +23,41 @@ import java.util.ArrayList;
  */
 public class Game implements Serializable {
 
-    /**The view in which the game will be display*/
+    /**
+     * The view in which the game will be display
+     */
     transient private GameMode mode;
-    /**The path of the file to save the game in*/
+    /**
+     * The path of the file to save the game in
+     */
     private String path;
-    /**The level of the game*/
+    /**
+     * The level of the game
+     */
     private final Level level;
-    /**The first player of the game*/
+    /**
+     * The first player of the game
+     */
     private final Player firstPlayer;
-    /**The second player of the game*/
+    /**
+     * The second player of the game
+     */
     private final Player secondPlayer;
-    /**The matrix of Elements that will represent a part in the game*/
+    /**
+     * The matrix of Elements that will represent a part in the game
+     */
     private GameBoard gameBoard;
-    /**The array containing the last positions of the Zen pawn for controlling its displacements*/
+    /**
+     * The array containing the last positions of the Zen pawn for controlling its displacements
+     */
     private int[] zenMoves = {GameBoard.getDIMENSION() / 2, GameBoard.getDIMENSION() / 2, -1, -1};
-    /**Indicates whether the Zen was moved or not at the last turn*/
+    /**
+     * Indicates whether the Zen was moved or not at the last turn
+     */
     private boolean zenMoved = false;
-    /**Allows to know who moved the Zen the last time*/
+    /**
+     * Allows to know who moved the Zen the last time
+     */
     private Player lastPlayerZ = null;
 
     /**
@@ -46,10 +65,11 @@ public class Game implements Serializable {
      * the two players, the mode and the level. Depending of the mode the
      * appropriate method is called to show the board at the beginning
      * of the game.
-     * @param mode the view mode used
-     * @param firstPlayer the first player of the game
+     *
+     * @param mode         the view mode used
+     * @param firstPlayer  the first player of the game
      * @param secondPlayer the second player of the game
-     * @param level the level of the game
+     * @param level        the level of the game
      */
     public Game(GameMode mode, Player firstPlayer, Player secondPlayer, Level level) {
         if (firstPlayer != null && secondPlayer != null && mode != null && level != null) {
@@ -87,10 +107,15 @@ public class Game implements Serializable {
      * Allows to restart a saved game by asking the user in which view mode
      * he wants to play. Then create the appropriate GameMode object and
      * ask this mode to restart the game.
+     *
+     * @param graphic if true, the question for continuing in graphic mode will be asked in a JOptionPane
      */
-    public void restartGame() {
-        int mode = JOptionPane.showConfirmDialog(null, Language.getText("mode question"), "Zen l'Initié",
-                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+    public void restartGame(boolean graphic) {
+        int mode;
+        if (graphic) {
+            mode = JOptionPane.showConfirmDialog(null, Language.getText("mode question"), "Zen l'Initié",
+                    JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        } else mode = (InputUtilities.getConfirmation(Language.getText("mode question")) ? 0 : 1);
         if (mode == JOptionPane.YES_OPTION) {
             this.mode = new Graphic(this.level);
         } else {
@@ -99,12 +124,18 @@ public class Game implements Serializable {
         this.mode.restartGame(this, this.gameBoard.getBoard());
     }
 
-    public void goToConsole(){
+    /**
+     * Allows to go from graphic mode to console mode
+     */
+    public void goToConsole() {
         this.mode = new Console(this.level);
         this.mode.restartGame(this, this.gameBoard.getBoard());
     }
 
-    public void goToGraphic(){
+    /**
+     * Allows to go fro mconsole mode to graphic mode
+     */
+    public void goToGraphic() {
         this.mode = new Graphic(this.level);
         this.mode.restartGame(this, this.gameBoard.getBoard());
     }
@@ -192,10 +223,11 @@ public class Game implements Serializable {
     /**
      * Allows to eat a pawn of the adverse if the player puts its pawn on one of
      * the adverse's pawn. The eaten pawn is removed from the list of pawns of the adverse.
-     * @param line the line where the player is putting its pawn.
-     * @param column the columns where the player is putting its pawn.
+     *
+     * @param line    the line where the player is putting its pawn.
+     * @param column  the columns where the player is putting its pawn.
      * @param adverse the adverse of the player.
-     * @param player the player playing.
+     * @param player  the player playing.
      */
     private void eatAdversePawn(int line, int column, Player adverse, Player player) {
         if (this.gameBoard.getBoard()[line][column] instanceof Pawn) {
@@ -212,8 +244,9 @@ public class Game implements Serializable {
      * many squares as there are pawns on the chosen line, it must not eat one of its own pawns, it must
      * not pass over one of the opponent's pawns. In the case of Zen, he may not return to the square on
      * which he was just before if he has just been moved.
-     * @param player the player paying
-     * @param move the move he decides to do according to format [pawn, line, column]
+     *
+     * @param player  the player paying
+     * @param move    the move he decides to do according to format [pawn, line, column]
      * @param adverse the adverse of the player
      * @return true if the move is correct, false otherwise
      */
@@ -278,20 +311,21 @@ public class Game implements Serializable {
      * Allows to write the object in a serialized format. The object write is this object
      * that contains the information about the players and the state of the game (the gameBoard).
      */
-    private void writeObject(){
+    private void writeObject() {
         try {
             FileOutputStream file = new FileOutputStream(this.path);
             ObjectOutputStream oos = new ObjectOutputStream(file);
             oos.writeObject(this);
             oos.flush();
             oos.close();
-        } catch (Exception e){
+        } catch (Exception e) {
             this.mode.saveAsFailure();
         }
     }
 
     /**
      * Allows to create the chinese symbols for the graphic view.
+     *
      * @return the matrix of ChineseSymbols to display
      */
     public ChineseSymbol[][] createSymbols() {
@@ -306,6 +340,9 @@ public class Game implements Serializable {
         return this.firstPlayer;
     }
 
+    /**
+     * @return the GameBoard object of the Game (used for the Demo)
+     */
     public GameBoard getGameBoard() {
         return this.gameBoard;
     }

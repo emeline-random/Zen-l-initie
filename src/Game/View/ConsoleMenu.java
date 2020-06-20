@@ -49,7 +49,7 @@ public class ConsoleMenu {
                     String path = InputUtilities.getInputRegex(Language.getText("get path open"), ".*.ser$", Language.getText("ser error"), null);
                     FileInputStream stream = new FileInputStream(path);
                     ObjectInputStream file = new ObjectInputStream(stream);
-                    ((Game) file.readObject()).restartGame();
+                    ((Game) file.readObject()).restartGame(false);
                     file.close();
                 } catch (ClassNotFoundException | IOException ex) {
                     System.out.println(Language.getText("save game error"));

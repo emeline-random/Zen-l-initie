@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
- * Java class that allows to creat a player in the game. This player will have
+ * Java class that allows to create a player in the game. This player will have
  * a name, a color, a number of points and a list of pawns.
  */
 public class Player implements Serializable {
@@ -115,7 +115,7 @@ public class Player implements Serializable {
 
     /**
      * Allows to get all the pawns alive of the player
-     * @return the pawns ArrayList<>
+     * @return the pawns ArrayList
      */
     public ArrayList<Pawn> getPawns() {
         return this.pawns;

@@ -51,6 +51,7 @@ public class SecondLevelTest {
      */
     @Test
     public void testToString() {
+        Language.setLanguage(Language.Languages.ENGLISH);
         assertEquals("second level", new SecondLevel().toString());
         Language.setLanguage(Language.Languages.FRENCH);
         assertEquals("second niveau", new SecondLevel().toString());

@@ -117,6 +117,7 @@ public class GameBoardTest {
      * @throws NoSuchMethodException if the method was not found in the class
      * @throws InvocationTargetException if the method cannot be applied
      * @throws IllegalAccessException if the method cannot be accessed
+     * @throws NoSuchFieldException if the field was not found in the class
      */
     @Test
     public void createChineseSymbols() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, NoSuchFieldException {

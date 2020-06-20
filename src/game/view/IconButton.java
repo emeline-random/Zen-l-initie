@@ -17,19 +17,31 @@ public class IconButton extends JButton {
      * The icon that will be on the button
      */
     private ImageIcon icon;
+    /**
+     * The path of the icon or its relative name from the icons directory
+     */
     private String iconPath;
+    /**
+     * Needs to be true if the icon has to be search with the getSchemeIcon method
+     */
     private boolean schemeIcon;
 
     /**
-     * Constructor of the class that sets the background as needed and that sets the icon.
-     * The background put depends on wether the current scheme is dark or not.
+     * Constructor of the class that sets the background as needed and that sets the icon or
+     * the path of the icon. If the path of the icon is given and if the icon is an icon that
+     * depends on the scheme, the boolean schemeIcon needs to be true.
+     * The background put depends on whether the current scheme is dark or not.
      *
      * @param imageIcon      the icon of the button
      * @param autoBackground true if the background needs to be automatically set
+     * @param iconPath       the path of the icon (this path is used to repaint the image if it is not null, so
+     *                       that this quality of the image is always good)
+     * @param schemeIcon     needs to be true if the path of the icon has to be searched with the getSchemeIcon() method of
+     *                       the ViewUtilities class
      */
-    public IconButton(ImageIcon imageIcon, boolean autoBackground, String iconPath, boolean schemeIcon) {//TODO javadoc upgrade
+    public IconButton(ImageIcon imageIcon, boolean autoBackground, String iconPath, boolean schemeIcon) {
         super();
-        if (imageIcon != null) {
+        if (imageIcon != null || iconPath != null) {
             this.schemeIcon = schemeIcon;
             this.icon = imageIcon;
             this.iconPath = iconPath;
@@ -38,6 +50,7 @@ public class IconButton extends JButton {
             } else {
                 if (schemeIcon) this.setIcon(ViewUtilities.getSchemeIcon(this.iconPath, true));
                 else this.setIcon(new ImageIcon(Objects.requireNonNull(ViewUtilities.getImage(this.iconPath))));
+                this.icon = (ImageIcon) this.getIcon();
             }
             if (autoBackground) {
                 if (Scheme.isDark()) this.setBackground(Scheme.DARK_COLOR);
@@ -79,7 +92,9 @@ public class IconButton extends JButton {
     /**
      * Allows to change the icon of the button and to repaint the button with the new icon.
      *
-     * @param icon the new icon
+     * @param icon       the new icon
+     * @param schemeIcon needs to be true if the icon has to be searched with getSchemeIcon() method
+     * @param iconPath   the path of the icon
      */
     public void changeIcon(ImageIcon icon, boolean schemeIcon, String iconPath) {
         this.icon = icon;

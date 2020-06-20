@@ -16,11 +16,10 @@ public class LanguageTest {
      */
     @Test
     public void setLanguage() {
+        Language.setLanguage(Language.Languages.ENGLISH);
         assertEquals(Language.Languages.ENGLISH, Language.getLanguage());
         Language.setLanguage(Language.Languages.FRENCH);
         assertEquals(Language.Languages.FRENCH, Language.getLanguage());
-        Language.setLanguage(Language.Languages.ENGLISH);
-        assertEquals(Language.Languages.ENGLISH, Language.getLanguage());
     }
 
     /**

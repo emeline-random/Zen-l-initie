@@ -9,22 +9,22 @@ import java.util.Arrays;
  * as so but can also be used in a console with it's ANSI_CODE. It will also prints the name
  * of the color instead of the rgb values usually given by Color class.
  * This class defines some static instances of itself that may be useful in preventing the
- * re-creation of similar objects..
+ * re-creation of similar objects.
  */
 public class GameColor extends Color {
 
     public final static GameColor RED = new GameColor(255, 0, 0, "\u001B[31m", "red");
     public final static GameColor YELLOW = new GameColor(255, 250, 205, "\u001B[33m", "yellow");
-    public final static GameColor GREEN = new GameColor(144, 238, 144, "\033[38;5;28m", "green");
-    public final static GameColor PINK = new GameColor(255, 228, 225, "\033[38;5;206m", "pink");
+    public final static GameColor GREEN = new GameColor(165, 185, 145, "\033[38;5;28m", "green");
+    public final static GameColor PINK = new GameColor(251, 158, 214, "\033[38;5;206m", "pink");
     public final static GameColor BLUE = new GameColor(135, 206, 250, "\u001B[34m", "blue");
-    public final static GameColor PURPLE = new GameColor(230, 230, 250, "\033[38;5;91m", "purple");
+    public final static GameColor PURPLE = new GameColor(204, 169, 234, "\033[38;5;91m", "purple");
     public final static GameColor WHITE = new GameColor(255, 255, 255, "\u001B[37m", "white");
-    public final static GameColor CYAN = new GameColor(224, 255, 255, "\u001B[36m", "cyan");
+    public final static GameColor CYAN = new GameColor(175, 238, 238, "\u001B[36m", "cyan");
     public final static GameColor ORANGE = new GameColor(255, 218, 185, "\033[38;5;202m", "orange");
-    public final static GameColor BROWN = new GameColor(210, 180, 140, "\033[38;5;88m", "brown");
-    public final static GameColor BURGUNDY = new GameColor(178, 34, 34, "\033[38;5;124m", "burgundy");
-    public final static GameColor TURQUOISE = new GameColor(175, 238, 238, "\033[38;5;87m", "turquoise");
+    public final static GameColor BROWN = new GameColor(133, 70, 79, "\033[38;5;88m", "brown");
+    public final static GameColor BURGUNDY = new GameColor(178, 34, 34, "\033[38;5;160m", "burgundy");
+    public final static GameColor TURQUOISE = new GameColor(102, 166, 180, "\033[38;5;87m", "turquoise");
 
     /**
      * the ansi code to print a text in the color in a console
@@ -38,7 +38,8 @@ public class GameColor extends Color {
     /**
      * Constructor of the class, initializes the object with the given values and creating the
      * awt Color object with the given rgb values.
-     *  @param r    red coefficient
+     *
+     * @param r    red coefficient
      * @param g    green coefficient
      * @param b    blue coefficient
      * @param code the ansi escape code linked to the color
