@@ -136,7 +136,7 @@ public class InputUtilities {
                 System.out.println("language changed");
                 break;
             case "sound":
-                Sound.setOn(!Sound.isOn());
+                Sound.setOn(!Sound.isOn(), false);
                 if (Sound.isOn()) System.out.println(Language.getText("sound on"));
                 else System.out.println(Language.getText("sound of"));
                 break;

@@ -208,6 +208,15 @@ public class Console implements GameMode {
     }
 
     /**
+     * Allows to make sure that the user doesn't want to save its game before quitting the application,
+     * and if he wants to save it calls the saveGame() method of the game to save.
+     */
+    @Override
+    public void quit() {
+        if (InputUtilities.getConfirmation(Language.getText("save message"))) this.game.saveGame();
+    }
+
+    /**
      * Allows to print a matrix of Element objects with indexing of rows and columns with numbers and letters.
      * If the Element is a Pawn the color of the string representation of the pawn is the color of the pawn object.
      *

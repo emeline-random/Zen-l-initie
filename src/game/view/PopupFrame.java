@@ -66,7 +66,7 @@ public class PopupFrame extends JDialog {
     public JButton getHomeButton() {
         JButton button = new JButton();
         try {
-            Image image = ImageIO.read(GraphicalInterface.class.getResourceAsStream("/pictures/icons/return.png"));
+            Image image = ImageIO.read(GraphicalInterface.class.getResourceAsStream("/res/pictures/icons/return.png"));
             int width = PopupFrame.COMPONENTS_HEIGHT * image.getWidth(null) / image.getHeight(null);
             button.setIcon(new ImageIcon(image.getScaledInstance(width, PopupFrame.COMPONENTS_HEIGHT, Image.SCALE_DEFAULT)));
         } catch (IOException e) {

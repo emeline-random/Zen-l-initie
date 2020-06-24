@@ -161,9 +161,9 @@ public class MenuListeners {
     public ActionListener soundListener(JButton soundButton) {
         return (e) -> {
             if (Sound.isOn()) {
-                Sound.setOn(false);
+                Sound.setOn(false, false);
             } else {
-                Sound.setOn(true);
+                Sound.setOn(true, true);
                 Sound.play(Sound.Sounds.BUTTON_PRESSED);
             }
             soundButton.setIcon(null);

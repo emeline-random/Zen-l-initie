@@ -71,4 +71,10 @@ public interface GameMode {
      * Has to inform the user that the save of its game has not been performed.
      */
     void saveAsFailure();
+
+    /**
+     * Allows to make sure that the user doesn't want to save its game before quitting the application,
+     * and if he wants to save it calls the saveGame() method of the game to save.
+     */
+    void quit();
 }

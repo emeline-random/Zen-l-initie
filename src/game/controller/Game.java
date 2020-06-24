@@ -31,6 +31,7 @@ public class Game implements Serializable {
      * The path of the file to save the game in
      */
     private String path;
+    private boolean saved = false;
     /**
      * The level of the game
      */
@@ -133,11 +134,19 @@ public class Game implements Serializable {
     }
 
     /**
-     * Allows to go fro mconsole mode to graphic mode
+     * Allows to go from console mode to graphic mode
      */
     public void goToGraphic() {
         this.mode = new Graphic(this.level);
         this.mode.restartGame(this, this.gameBoard.getBoard());
+    }
+
+    /**
+     * Allows the user to save its game before quitting the application if it is not already done.
+     */
+    public void quit() {
+        if (!this.saved) this.mode.quit();
+        System.exit(0);
     }
 
     /**
@@ -216,6 +225,7 @@ public class Game implements Serializable {
 
             this.firstPlayer.setPlaying(!this.firstPlayer.isPlaying());
             this.secondPlayer.setPlaying(!this.secondPlayer.isPlaying());
+            this.saved = false;
         }
         this.endGame();
     }
@@ -318,6 +328,7 @@ public class Game implements Serializable {
             oos.writeObject(this);
             oos.flush();
             oos.close();
+            this.saved = true;
         } catch (Exception e) {
             this.mode.saveAsFailure();
         }

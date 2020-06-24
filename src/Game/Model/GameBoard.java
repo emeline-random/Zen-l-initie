@@ -135,14 +135,14 @@ public class GameBoard implements Serializable {
     /**
      * Allows to create one ChineseSymbol and to place it on the matrix
      * of ChineseSymbols, the name of the picture that represents the symbol
-     * is stored in "pictures/symbols/linecolumn.png".
+     * is stored in "res.pictures/symbols/lineColumn.png".
      * @param line the line to place the symbol on
      * @param column the column to place the symbol on
      */
     private void createOneSymbol(int line, int column) {
         try {
             this.symbols[line][column] = new ChineseSymbol(line, column, ImageIO.read(getClass()
-                    .getResourceAsStream("/pictures/symbols/"+line+""+column+".png")));
+                    .getResourceAsStream("/res/pictures/symbols/" +line+""+column+".png")));
         } catch (IOException e) {
             e.printStackTrace();
         }

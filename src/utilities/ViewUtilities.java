@@ -81,17 +81,17 @@ public class ViewUtilities {
     /**
      * Allows to get an icon that depends on the current scheme. The icon has the dimension of
      * the component height defined in the PopupFrame class (the width is adapted) if the manageSize
-     * boolean is set to true. If the current scheme is dark, the image is searched in /pictures/icons/dark,
-     * else in /pictures/icons/light and if the icon is ot found then it is searched in /pictures/icons.
+     * boolean is set to true. If the current scheme is dark, the image is searched in /res.pictures/icons/dark,
+     * else in /res.pictures/icons/light and if the icon is ot found then it is searched in /res.pictures/icons.
      * @param iconName the path of the icon from the directories defined higher (often simply imageName.png)
      * @param manageSize needs to be true if the image needs to be resized
      * @return the version of the icon in the current scheme
      */
     public static ImageIcon getSchemeIcon(String iconName, boolean manageSize) {
         Image image;
-        if (Scheme.isDark()) image = getImage("/pictures/icons/dark/" + iconName);
-        else image = getImage("/pictures/icons/light/" + iconName);
-        if (image == null) image = getImage("/pictures/icons/" + iconName);
+        if (Scheme.isDark()) image = getImage("/res/pictures/icons/dark/" + iconName);
+        else image = getImage("/res/pictures/icons/light/" + iconName);
+        if (image == null) image = getImage("/res/pictures/icons/" + iconName);
         assert image != null;
         if (manageSize){
             int width = PopupFrame.getComponentsHeight() * image.getWidth(null) / image.getHeight(null);

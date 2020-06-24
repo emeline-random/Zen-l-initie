@@ -9,9 +9,7 @@ import utilities.InputUtilities;
 import utilities.MatrixUtilities;
 
 import javax.swing.*;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 
 /**
  * Java class that allows to listen to both game board and input panel. To do that
@@ -159,6 +157,21 @@ public class BoardAndInputListeners {
                 this.graphicalInterface.getCoordinates()[2] = -1;
             }
             this.graphicalInterface.sendCoordinates(Level.HARD, line, column);
+        };
+    }
+
+    /**
+     * Allows to get a listener that prevents from quitting the window before saving the current game
+     * @param game the game that is not saved
+     * @return the window listener calling the quit() method of the game
+     */
+    public WindowListener windowListener(Game game){
+        return new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                game.quit();
+                super.windowClosing(e);
+            }
         };
     }
 }

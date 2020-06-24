@@ -12,7 +12,7 @@ public class Language {
     /**
      * The current file where the texts are taken from
      */
-    private static String file = "/Languages/English.txt";
+    private static String file = "/res/Languages/English.txt";
     /**
      * The current language
      */
@@ -35,10 +35,10 @@ public class Language {
         Language.language = language;
         switch (language) {
             case FRENCH:
-                file = "/Languages/French.txt";
+                file = "/res/Languages/French.txt";
                 break;
             case ENGLISH:
-                file = "/Languages/English.txt";
+                file = "/res/Languages/English.txt";
                 break;
         }
     }
@@ -65,7 +65,7 @@ public class Language {
     /**
      * Allows to get the current language
      *
-     * @return an element of the Languages enum
+     * @return an element of the res.Languages enum
      */
     public static Languages getLanguage() {
         return Language.language;

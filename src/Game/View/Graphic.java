@@ -191,6 +191,16 @@ public class Graphic implements GameMode {
     }
 
     /**
+     * Allows to make sure that the user doesn't want to save its game before quitting the application,
+     * and if he wants to save it calls the saveGame() method of the game to save.
+     */
+    @Override
+    public void quit() {
+        if (JOptionPane.showConfirmDialog(this.anInterface, Language.getText("save message"), "Zen l'initié",
+                JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) this.game.saveGame();
+    }
+
+    /**
      * Allows to get the interface (to create a demo)
      * @return the interface
      */

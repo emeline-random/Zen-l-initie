@@ -39,7 +39,7 @@ public class GraphicalInterface extends JFrame {
      */
     private JLabel playerName;
     /**
-     * The JLabel displaying informations as needed (such as impossible displecement)
+     * The JLabel displaying information as needed (such as impossible displacement)
      */
     private JLabel information;
     /**
@@ -90,6 +90,7 @@ public class GraphicalInterface extends JFrame {
         if (game != null && level != null) {
             this.coordinates = new int[3];
             this.listeners = new MenuBarListeners(this, game, board, symbols, level);
+            this.addWindowListener(this.boardListeners.windowListener(game));
             this.showFrame(game, board, level, symbols);
         } else {
             throw new IllegalArgumentException();
@@ -109,7 +110,7 @@ public class GraphicalInterface extends JFrame {
         this.pawn.setHorizontalAlignment(JTextField.CENTER);
         this.playerName = new JLabel(Language.getText("name"));
         this.information = new JLabel();
-        this.setIconImage(ViewUtilities.getImage("/pictures/logo.png"));
+        this.setIconImage(ViewUtilities.getImage("/res/pictures/logo.png"));
         this.configFrame();
         JTextField line = new JTextField(3);
         JTextField column = new JTextField(3);
@@ -130,7 +131,7 @@ public class GraphicalInterface extends JFrame {
         this.add(totalPanel, BorderLayout.CENTER);
         this.pawn.requestFocus();
         if (dimension == null) {
-            this.pack();
+            this.setSize(1200, 650);
             this.setLocationRelativeTo(null);
         } else this.setSize(dimension);
         this.setVisible(true);
@@ -217,11 +218,11 @@ public class GraphicalInterface extends JFrame {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                g.drawImage(ViewUtilities.getImage("/pictures/pawns_background.png", this.getWidth(), this.getHeight()),
+                g.drawImage(ViewUtilities.getImage("/res/pictures/pawns_background.png", this.getWidth(), this.getHeight()),
                         0, 0, null);
                 int widthSpace = this.getWidth() - (GameBoard.getDIMENSION() + 1) * Element.getSizeUnity();
                 if (widthSpace > 200) {
-                    Image image = ViewUtilities.getImage("/pictures/buddha.png");
+                    Image image = ViewUtilities.getImage("/res/pictures/buddha.png");
                     assert image != null;
                     int width = (this.getHeight() - 10) * image.getWidth(null) / image.getHeight(null);
                     g.drawImage(ViewUtilities.getImage(image, width, this.getHeight() - 10), this.getWidth() - width,
@@ -349,7 +350,7 @@ public class GraphicalInterface extends JFrame {
             @Override
             protected void paintComponent(Graphics graphics) {
                 if (this.getIcon() == null || infoPanel.getHeight() / 3 - 10 != this.getIcon().getIconHeight())
-                    this.setIcon(ViewUtilities.getIcon("/pictures/logo.png", infoPanel.getHeight() / 3 - 10,
+                    this.setIcon(ViewUtilities.getIcon("/res/pictures/logo.png", infoPanel.getHeight() / 3 - 10,
                             infoPanel.getHeight() / 3 - 10));
                 super.paintComponent(graphics);
             }
@@ -535,9 +536,9 @@ public class GraphicalInterface extends JFrame {
         pane.setEditable(false);
         try {
             if (Language.getLanguage() == Language.Languages.FRENCH)
-                pane.setPage(Objects.requireNonNull(getClass().getClassLoader().getResource("Languages/FrenchHelp.html")).toURI().toURL());
+                pane.setPage(Objects.requireNonNull(getClass().getClassLoader().getResource("res/Languages/FrenchHelp.html")).toURI().toURL());
             else
-                pane.setPage(Objects.requireNonNull(getClass().getClassLoader().getResource("Languages/EnglishHelp.html")).toURI().toURL());
+                pane.setPage(Objects.requireNonNull(getClass().getClassLoader().getResource("res/Languages/EnglishHelp.html")).toURI().toURL());
         } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
         }
@@ -613,7 +614,7 @@ public class GraphicalInterface extends JFrame {
     /**
      * Allows to indicate if the user wants to go back to the menu and exit the game
      *
-     * @param backToMenu true if the user wqants to go back to the menu, false otherwise.
+     * @param backToMenu true if the user wants to go back to the menu, false otherwise.
      */
     public void setBackToMenu(boolean backToMenu) {
         this.backToMenu = backToMenu;
